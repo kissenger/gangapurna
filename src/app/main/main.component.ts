@@ -12,8 +12,6 @@ import { ChartDataSets, ChartOptions, scaleService } from 'chart.js';
   styleUrls: ['./main.component.css']
 })
 
-
-
 export class MainComponent implements OnInit {
 
   public sensorData = [];
@@ -53,6 +51,11 @@ export class MainComponent implements OnInit {
   }
 
   updateChart() {
+
+    /*
+      Note that we are using legcay versions of chart.js and ng2-charts that are
+      compatible with Angular v8
+    */
 
     this.chartData =[ {
       data:  this.rhCritTemps.map(t => ({x: t, y: this.rhCrit.transform(t)}) ),
