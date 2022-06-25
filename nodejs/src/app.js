@@ -29,6 +29,7 @@ app.use( (req, res, next) => {
 app.use(bodyParser.json());
 app.use((req, res, next) => {
   // debugMsg(`${req.method}: ${req.originalUrl}`);
+  console.log()
   next();
 })
 
@@ -43,6 +44,9 @@ mongoose.connection
   .on('close', () => console.log('MongoDB disconnected'))
   .once('open', () => console.log('MongoDB connected') );
 
+app.get('/api/ping/', async (req, res) => {
+  res.status(201).json({"hello": "world"});
+})
 
 /*****************************************************************
  * import a route from a gpx file
@@ -53,6 +57,53 @@ app.post('/api/new-data/', async (req, res) => {
   console.log(req.body);
   await Data.create( req.body );
 });
+
+
+/*****************************************************************
+ * import a route from a gpx file
+ ******************************************************************/
+app.get('/api/get-latest/:sensorName', async (req, res) => {
+
+  let doc = await Data.find({sensor_name: req.params.sensorName}).sort({time: -1}).limit(1);
+  res.status(201).json( doc[0] );
+
+});
+
+
+/**
+ * rhi
+ * Inputs:  t = temp in degrees centigrade
+ *          rh = relative humidity as %
+ * Outputs: rhi = rh / rh_crit
+ */
+
+function rhi(t, rh) {
+  return rh / rhCrit(t);
+}
+
+
+/**
+ * rhCrit
+ * Inputs: t = temp in degrees centigrade
+ * Outputs: rh_crit = rh for mould risk at given temperature
+ */
+
+function rhCrit(t) {
+
+  const A = 0.0168;
+  const B = -1.5741;
+  const C = 93.137;
+
+  if (t <= 2) {
+    return 100;
+  } else if (t >= 24) {
+    return 65;
+  } else {
+    return A * t * t + B * t + C;
+  }
+
+}
+
 
 module.exports = app;
 
