@@ -6,7 +6,8 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MainComponent } from './main/main.component';
+import { LatestComponent } from './latest/latest.component';
+import { TimeHistoryComponent } from './time-history/time-history.component';
 import { HttpService } from './shared/http.service';
 import { RhcritPipe } from './shared/rhcrit.pipe';
 import { RhiPipe } from './shared/rhi.pipe';
@@ -14,9 +15,10 @@ import { RhiPipe } from './shared/rhi.pipe';
 @NgModule({
   declarations: [
     AppComponent,
-    MainComponent,
+    LatestComponent,
     RhcritPipe,
-    RhiPipe
+    RhiPipe,
+    TimeHistoryComponent
   ],
   imports: [
     BrowserModule,

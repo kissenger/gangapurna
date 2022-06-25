@@ -1,11 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { MainComponent } from './main/main.component';
+import { LatestComponent } from './latest/latest.component';
+import { TimeHistoryComponent } from './time-history/time-history.component';
 
 
 const routes: Routes = [
-  { path: 'latest/:nReadings', component: MainComponent },
-  { path: 'latest', redirectTo: '/latest/1' }
+  { path: 'latest/:nReadings', component: LatestComponent },
+  { path: 'latest', redirectTo: '/latest/1' },
+  { path: 'time-history/:nReadings', component: TimeHistoryComponent },
+  { path: 'time-history', redirectTo: '/time-history/144' },
 ];
 
 @NgModule({

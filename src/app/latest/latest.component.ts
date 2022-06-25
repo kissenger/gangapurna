@@ -8,12 +8,12 @@ import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
-  selector: 'app-main',
-  templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css']
+  selector: 'app-latest',
+  templateUrl: './latest.component.html',
+  styleUrls: ['./latest.component.css']
 })
 
-export class MainComponent implements OnInit {
+export class LatestComponent implements OnInit {
 
   public sensorData = [];
   public printData = [];
@@ -72,6 +72,7 @@ export class MainComponent implements OnInit {
       compatible with Angular v8
     */
 
+
     this.chartData =[ {
       data:  this.rhCritTemps.map(t => ({x: t, y: this.rhCrit.transform(t)}) ),
       showLine: true,
@@ -83,29 +84,59 @@ export class MainComponent implements OnInit {
       fill: false,
       label: 'RHcrit'
     }, {
-      data: this.getData(this.sensorData[0]),
-      showLine: true,
+      // latest data point for sensor 1
+      data: [ {x: this.sensorData[0][0].temp, y: this.sensorData[0][0].rh}],
       radius: 5,
-      fill: false,
-      // borderColor: 'rgb(255,0,0)',
-      // borderWidth: 2,
-
-      borderColor: 'rgba(255,100,100,0.8)',
-      pointBackgroundColor: 'rgba(255,100,100,0.8)',
-      backgroundColor: 'rgba(255,100,100,0.8)',
-      label: this.sensorData[0].sensor_name
+      pointBorderColor: 'rgba(0,0,0,0.8)',
+      pointBackgroundColor: 'rgba(255,100,100,1)',
+      backgroundColor:'rgba(255,100,100,1)',
     }, {
-      data: this.getData(this.sensorData[1]),
+      // all points for sensor 1
+      data: this.getData(this.sensorData[0]).reverse(),
       showLine: true,
       fill: false,
       radius: 5,
-      // borderWidth: 50,
-      // borderColor: 'rgba(0,255,0,0.5)',
+      borderWidth: 2,
+      borderColor: 'rgba(255,100,100,0.8)',
+      pointBorderColor: 'rgba(255,100,100,1)',
+      pointBackgroundColor: 'rgba(255,100,100,0.5)',
+      backgroundColor:'rgba(255,100,100,0.5)',
+      label: this.sensorData[0][0].sensor_name
+    }, {
+      // latest data point for sensor 2
+      data: [ {x: this.sensorData[1][0].temp, y: this.sensorData[1][0].rh}],
+      radius: 5,
+      pointBorderWidth: 1,
+      pointBorderColor: 'rgba(0,0,0,1)',
+      pointBackgroundColor: 'rgba(100,100,255,1)',
+      label: this.sensorData[1][0].sensor_name
+    }, {
+      // all points for sensor 2
+      data: this.getData(this.sensorData[1]).reverse(),
+      showLine: true,
+      fill: false,
+      radius: 5,
+      pointBorderWidth: 1,
       borderColor: 'rgba(100,100,255,0.8)',
-      pointBackgroundColor: 'rgba(100,100,255,0.8)',
-      backgroundColor: 'rgba(100,100,255,0.8)',
-      label: this.sensorData[1].sensor_name
-    }];
+      pointBorderColor: 'rgba(100,100,255,0.5)',
+      pointBackgroundColor: 'rgba(100,100,255,0.5)',
+      label: this.sensorData[1][0].sensor_name
+    }
+  ]
+
+
+    // for (let i = 0; i < this.sensorData[0].length; i++) {
+    //   let opacity = 1.0 - (1 / nReadings) * i;
+    //   this.chartData.push({
+    //     data: [{x:this.sensorData[0][i].temp, y: this.sensorData[0][i].rh}],
+    //     radius: 5,
+    //     borderColor: `rgba(100,100,255,${opacity})`,
+    //     pointBackgroundColor: `rgba(100,100,255,${opacity})`,
+    //     backgroundColor: `rgba(100,100,255,${opacity})`,
+    //     label: i == 0 ? this.sensorData[0][1].sensor_name : '',
+    //   });
+    // }
+
 
 
 
@@ -141,7 +172,7 @@ export class MainComponent implements OnInit {
       },
       tooltips: {
         intersect: true
-      }
+      },
     };
   };
 
