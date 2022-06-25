@@ -62,47 +62,12 @@ app.post('/api/new-data/', async (req, res) => {
 /*****************************************************************
  * import a route from a gpx file
  ******************************************************************/
-app.get('/api/get-latest/:sensorName', async (req, res) => {
-
-  let doc = await Data.find({sensor_name: req.params.sensorName}).sort({time: -1}).limit(1);
-  res.status(201).json( doc[0] );
+app.get('/api/get-latest/:sensorName/:nReadings', async (req, res) => {
+  console.log(req.params.nReadings);
+  let doc = await Data.find({sensor_name: req.params.sensorName}).sort({time: -1}).limit(req.params.nReadings);
+  res.status(201).json( doc );
 
 });
-
-
-/**
- * rhi
- * Inputs:  t = temp in degrees centigrade
- *          rh = relative humidity as %
- * Outputs: rhi = rh / rh_crit
- */
-
-function rhi(t, rh) {
-  return rh / rhCrit(t);
-}
-
-
-/**
- * rhCrit
- * Inputs: t = temp in degrees centigrade
- * Outputs: rh_crit = rh for mould risk at given temperature
- */
-
-function rhCrit(t) {
-
-  const A = 0.0168;
-  const B = -1.5741;
-  const C = 93.137;
-
-  if (t <= 2) {
-    return 100;
-  } else if (t >= 24) {
-    return 65;
-  } else {
-    return A * t * t + B * t + C;
-  }
-
-}
 
 
 module.exports = app;

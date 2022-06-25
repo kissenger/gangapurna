@@ -17,9 +17,9 @@ export class HttpService {
 
   }
 
-  getLatestSensorData(sensorName: string) {
+  getLatestSensorData(sensorName: string, nReadings: number) {
     return this.http
-      .get<any>(`${this.backendURL}/get-latest/${sensorName}`);
+      .get<any>(`${this.backendURL}/get-latest/${sensorName}/${nReadings}`);
   }
 
 }

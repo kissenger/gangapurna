@@ -4,11 +4,12 @@ import { MainComponent } from './main/main.component';
 
 
 const routes: Routes = [
-  { path: 'latest', component: MainComponent }
+  { path: 'latest/:nReadings', component: MainComponent },
+  { path: 'latest', redirectTo: '/latest/1' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {enableTracing: true})],
+  imports: [RouterModule.forRoot(routes, {enableTracing: false})],
   exports: [RouterModule]
 })
 
