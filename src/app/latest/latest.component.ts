@@ -37,14 +37,18 @@ export class LatestComponent implements OnInit {
 
 
     let nReadings = await this.getParams();
-    console.log(nReadings);
 
     for (let i = 0; i < this.sensors.length; i++) {
       let newData = await this.getSensorData(this.sensors[i], nReadings);
       this.sensorData.push(newData);
+
+      const sampleTime = new Date(newData[0].time).getTime()/1000/60;
+      const currentTime = new Date().getTime()/1000/60;
+      const rhi = this.rhi.transform(newData[0].rh, newData[0].temp);
+      newData[0].isTimeGood = (currentTime - sampleTime) < 15;
+      newData[0].rhiStatus = rhi < 1.0 ? 'good' : rhi < 1.03 ? 'ok' : 'bad';
       this.printData.push(newData[0]);
     }
-
 
     this.updateChart();
   }
@@ -89,19 +93,18 @@ export class LatestComponent implements OnInit {
       radius: 5,
       pointBorderColor: 'rgba(0,0,0,0.8)',
       pointBackgroundColor: 'rgba(255,100,100,1)',
-      backgroundColor:'rgba(255,100,100,1)',
+      borderColor: 'rgba(255,100,100,1)',
+      backgroundColor: 'rgba(255,100,100,1)',
+      label: this.sensorData[0][0].sensor_name + '_now'
     }, {
       // all points for sensor 1
       data: this.getData(this.sensorData[0]).reverse(),
       showLine: true,
       fill: false,
-      radius: 5,
+      radius: 0,
       borderWidth: 2,
-      borderColor: 'rgba(255,100,100,0.8)',
-      pointBorderColor: 'rgba(255,100,100,1)',
-      pointBackgroundColor: 'rgba(255,100,100,0.5)',
-      backgroundColor:'rgba(255,100,100,0.5)',
-      label: this.sensorData[0][0].sensor_name
+      borderColor: 'rgba(255,100,100,0.3)',
+      label: this.sensorData[0][0].sensor_name + "_history"
     }, {
       // latest data point for sensor 2
       data: [ {x: this.sensorData[1][0].temp, y: this.sensorData[1][0].rh}],
@@ -109,18 +112,17 @@ export class LatestComponent implements OnInit {
       pointBorderWidth: 1,
       pointBorderColor: 'rgba(0,0,0,1)',
       pointBackgroundColor: 'rgba(100,100,255,1)',
-      label: this.sensorData[1][0].sensor_name
+      borderColor: 'rgba(100,100,255,1)',
+      backgroundColor: 'rgba(100,100,255,1)',
+      label: this.sensorData[1][0].sensor_name + '_now'
     }, {
       // all points for sensor 2
       data: this.getData(this.sensorData[1]).reverse(),
       showLine: true,
       fill: false,
-      radius: 5,
-      pointBorderWidth: 1,
-      borderColor: 'rgba(100,100,255,0.8)',
-      pointBorderColor: 'rgba(100,100,255,0.5)',
-      pointBackgroundColor: 'rgba(100,100,255,0.5)',
-      label: this.sensorData[1][0].sensor_name
+      radius: 0,
+      borderColor: 'rgba(100,100,255,0.3)',
+      label: this.sensorData[1][0].sensor_name + '_history'
     }
   ]
 
@@ -178,7 +180,6 @@ export class LatestComponent implements OnInit {
 
 
   getData(sensorDataArray) {
-    console.log(sensorDataArray)
     let data = [];
     for (let i = 0; i < sensorDataArray.length; i++) {
       data.push({x:sensorDataArray[i].temp, y: sensorDataArray[i].rh})

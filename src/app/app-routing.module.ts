@@ -5,10 +5,11 @@ import { TimeHistoryComponent } from './time-history/time-history.component';
 
 
 const routes: Routes = [
+  { path: '', redirectTo: '/latest/36', pathMatch: 'full' },
   { path: 'latest/:nReadings', component: LatestComponent },
-  { path: 'latest', redirectTo: '/latest/1' },
+  { path: 'latest', redirectTo: '/latest/36' },
   { path: 'time-history/:nReadings', component: TimeHistoryComponent },
-  { path: 'time-history', redirectTo: '/time-history/144' },
+  { path: 'time-history', redirectTo: '/time-history/432' },
 ];
 
 @NgModule({

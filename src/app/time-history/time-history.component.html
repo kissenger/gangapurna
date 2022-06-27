@@ -1,10 +1,30 @@
+<hr>
 <div>
-  <canvas height="300" width="300" baseChart
-      [datasets]="chartData"
+    <canvas baseChart
+        [datasets]="chartData['rhi']"
+        [chartType]="'line'"
+        [labels]="chartLabels"
+        [options]="chartOptions['rhi']"
+        [colors]="chartColors"
+        [legend]="chartLegend">
+    </canvas>
+
+    <canvas baseChart
+      [datasets]="chartData['temp']"
       [chartType]="'line'"
       [labels]="chartLabels"
-      [options]="chartOptions"
+      [options]="chartOptions['temp']"
       [colors]="chartColors"
       [legend]="chartLegend">
-  </canvas>
+    </canvas>
+
+    <canvas baseChart
+      [datasets]="chartData['rh']"
+      [chartType]="'line'"
+      [labels]="chartLabels"
+      [options]="chartOptions['rh']"
+      [colors]="chartColors"
+      [legend]="chartLegend">
+    </canvas>
 </div>
+

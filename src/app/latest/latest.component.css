@@ -1,0 +1,25 @@
+.cssGood {
+  background-color: lightgreen;
+}
+
+.cssOK {
+  background-color: orange;
+}
+
+.cssBad {
+  background-color: red;
+}
+
+.align-centre {
+  text-align: center;
+}
+
+tr {
+  border: 1px grey solid;
+  border-collapse: collapse;
+}
+
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+}

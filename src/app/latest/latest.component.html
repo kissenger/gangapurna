@@ -1,40 +1,26 @@
-<div *ngFor="let data of printData; let i = index">
-
-  <table>
-    <tr>
-      <td>Sensor Name</td>
-      <td>{{data.sensor_name}}</td>
-    </tr>
-    <tr>
-      <td>Found?</td>
-      <td>{{data.sensor_found}}</td>
-    </tr>
-    <tr>
-      <td>Timestamp</td>
-      <td>{{data.time}}</td>
-    </tr>
-    <tr>
-      <td>RH</td>
-      <td>{{data.rh | number: '1.1-1'}}%</td>
-    </tr>
-    <tr>
-      <td>T</td>
-      <td>{{data.temp | number: '1.1-1'}}&deg;C</td>
-    </tr>
-    <tr>
-      <td>RHcrit</td>
-      <td>{{data.temp | rhCrit | number: '1.1-1'}}%</td>
-    </tr>
-    <tr>
-      <td>RHI</td>
-      <td>{{data.rh | rhi: data.temp | number: '1.2-2'}}</td>
-    </tr>
-  </table>
-
-  <p></p>
-
-</div>
-
+<hr>
+<table class="centered">
+  <td>
+    <tr>Sensor Name</tr>
+    <tr>Found?</tr>
+    <tr>Timestamp</tr>
+    <tr>RH</tr>
+    <tr>Temp</tr>
+    <tr>RHcrit</tr>
+    <tr>RHI</tr>
+  </td>
+  <td *ngFor="let data of printData; let i = index">
+    <tr class="align-centre"><b>{{data.sensor_name}}</b></tr>
+    <tr>{{data.sensor_found}}</tr>
+    <tr [ngClass]="data.isTimeGood ? 'cssGood' : 'cssBad'">{{data.time}}</tr>
+    <tr>{{data.rh | number: '1.1-1'}}%</tr>
+    <tr>{{data.temp | number: '1.1-1'}}&deg;C</tr>
+    <tr>{{data.temp | rhCrit | number: '1.1-1'}}%</tr>
+    <tr [ngClass]="data.rhiStatus ==='good' ? 'cssGood' : data.rhiStatus === 'ok' ? 'cssOK' : 'cssBad'">
+      {{data.rh | rhi: data.temp | number: '1.2-2'}}</tr>
+  </td>
+</table>
+<hr>
 <div>
   <canvas height="300" width="300" baseChart
       [datasets]="chartData"

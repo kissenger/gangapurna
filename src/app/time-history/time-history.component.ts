@@ -41,9 +41,6 @@ export class TimeHistoryComponent implements OnInit {
       this.sensorData.push(newData);
     }
 
-    console.log(this.sensorData)
-
-
     this.updateChart();
   }
 
@@ -72,77 +69,136 @@ export class TimeHistoryComponent implements OnInit {
       compatible with Angular v8
     */
 
+    const chart_params = ['rhi', 'temp', 'rh'];
 
-    this.chartData =[ {
-      data:  this.getTimeHistory(this.sensorData[0]),
-      showLine: true,
-      borderWidth: 5,
-      lineTension: 0,
-      pointRadius: 0,
-      borderColor: 'rgba(255,100,100,0.5)',
-      backgroundColor: 'rgba(255,100,100,0.5)',
-      fill: false,
-      label: 'ahtInside'
-    }, {
-      data:  this.getTimeHistory(this.sensorData[1]),
-      showLine: true,
-      borderWidth: 5,
-      lineTension: 0,
-      pointRadius: 0,
-      borderColor: 'rgba(100,100,255,0.5)',
-      backgroundColor: 'rgba(100,100,255,0.5)',
-      fill: false,
-      label: 'ahtOutside'
-    } ];
+    chart_params.forEach(param => {
+
+      this.chartData[param] = [{
+        data:  this.getTimeHistory(this.sensorData[0], param),
+        showLine: true,
+        borderWidth: 3,
+        lineTension: 0,
+        pointRadius: 0,
+        borderColor: 'rgba(255,100,100,0.5)',
+        pointBackgroundColor: 'rgba(255,100,100,0.5)',
+        backgroundColor: 'rgba(255,100,100,0.5)',
+        fill: false,
+        label: 'ahtInside'
+      }, {
+        data:  this.getTimeHistory(this.sensorData[1], param),
+        showLine: true,
+        borderWidth: 3,
+        lineTension: 0,
+        pointRadius: 0,
+        borderColor: 'rgba(100,100,255,0.5)',
+        pointBackgroundColor: 'rgba(100,100,255,0.5)',
+        backgroundColor: 'rgba(100,100,255,0.5)',
+        fill: false,
+        label: 'ahtOutside'
+      }];
+
+      this.chartOptions[param] = {
+        title: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            type: 'time'
+          }, {
+            scaleLabel: {
+              display: true,
+              // labelString: param === 'rhi' ? '[-]' : param === 'temp' ? 'degC' : '%RH',
+              lineHeight: 1,
+              padding: 4,
+              fontSize: 12
+            },
+            ticks: {
+              fontSize: 10
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: param === 'rhi' ? '[-]' : param === 'temp' ? 'degC' : '%RH',
+              lineHeight: 1,
+              padding: 4,
+              fontSize: 12
+            },
+            ticks: {
+              fontSize: 10
+            }
+          }]
+        },
+        tooltips: {
+          intersect: true
+        },
+      };
+    })
+
+    // this.rhi_data =[ {
+    //   data:  this.getTimeHistory(this.sensorData[0], 'rhi'),
+    //   showLine: true,
+    //   borderWidth: 5,
+    //   lineTension: 0,
+    //   pointRadius: 0,
+    //   borderColor: 'rgba(255,100,100,0.5)',
+    //   pointBackgroundColor: 'rgba(255,100,100,0.5)',
+    //   backgroundColor: 'rgba(255,100,100,0.5)',
+    //   fill: false,
+    //   label: 'ahtInside'
+    // }, {
+    //   data:  this.getTimeHistory(this.sensorData[1], 'rhi'),
+    //   showLine: true,
+    //   borderWidth: 5,
+    //   lineTension: 0,
+    //   pointRadius: 0,
+    //   borderColor: 'rgba(100,100,255,0.5)',
+    //   pointBackgroundColor: 'rgba(100,100,255,0.5)',
+    //   backgroundColor: 'rgba(100,100,255,0.5)',
+    //   fill: false,
+    //   label: 'ahtOutside'
+    // } ];
+
+    // this.temp_data =[ {
+    //   data:  this.getTimeHistory(this.sensorData[0]),
+    //   showLine: true,
+    //   borderWidth: 5,
+    //   lineTension: 0,
+    //   pointRadius: 0,
+    //   borderColor: 'rgba(255,100,100,0.5)',
+    //   pointBackgroundColor: 'rgba(255,100,100,0.5)',
+    //   backgroundColor: 'rgba(255,100,100,0.5)',
+    //   fill: false,
+    //   label: 'ahtInside'
+    // }, {
+    //   data:  this.getTimeHistory(this.sensorData[1]),
+    //   showLine: true,
+    //   borderWidth: 5,
+    //   lineTension: 0,
+    //   pointRadius: 0,
+    //   borderColor: 'rgba(100,100,255,0.5)',
+    //   pointBackgroundColor: 'rgba(100,100,255,0.5)',
+    //   backgroundColor: 'rgba(100,100,255,0.5)',
+    //   fill: false,
+    //   label: 'ahtOutside'
+    // } ];
 
 
-
-    this.chartOptions = {
-      title: {
-        display: false
-      },
-      scales: {
-        xAxes: [{
-          type: 'time'
-        }, {
-          scaleLabel: {
-            display: true,
-            labelString: 'degC',
-            lineHeight: 1,
-            padding: 4,
-            fontSize: 12
-          },
-          ticks: {
-            fontSize: 10
-          }
-        }],
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: '%RH',
-            lineHeight: 1,
-            padding: 4,
-            fontSize: 12
-          },
-          ticks: {
-            fontSize: 10
-          }
-        }]
-      },
-      tooltips: {
-        intersect: true
-      },
-    };
   };
 
 
-  getTimeHistory(sensorDataArray) {
+  getTimeHistory(sensorDataArray, param) {
 
     let data = [];
     for (let i = 0; i < sensorDataArray.length; i++) {
-      data.push({x:sensorDataArray[i].time, y: sensorDataArray[i].temp})
+      if (param === "rhi") {
+        data.push({x:sensorDataArray[i].time, y:  this.rhi.transform(sensorDataArray[i].rh, sensorDataArray[i].temp)});
+      } else if (param === "temp") {
+        data.push({x:sensorDataArray[i].time, y:  sensorDataArray[i].temp});
+      } else if (param === "rh") {
+        data.push({x:sensorDataArray[i].time, y:  sensorDataArray[i].rh});
+      }
     }
-    console.log(data)
     return data;
   }
 
