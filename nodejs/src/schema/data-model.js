@@ -9,8 +9,10 @@ const dataSchema = mongoose.Schema({
     set: d => new Date(d * 1000),
     required: true
   },
+  deployed: {type: Boolean},
   rh: {type: Number},
-  temp: {type: Number}
+  temp: {type: Number},
+  press: {type: Number}
 
 })
 

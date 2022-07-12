@@ -55,7 +55,11 @@ app.post('/api/new-data/', async (req, res) => {
 
 //  const data = req.body.data;
   console.log(req.body);
-  await Data.create( req.body );
+  let dataArr = req.body.data;
+  for (let i = 0; i < dataArr.length; i++) {
+    await Data.create( dataArr[i] );
+  }
+
 });
 
 
@@ -63,7 +67,7 @@ app.post('/api/new-data/', async (req, res) => {
  * import a route from a gpx file
  ******************************************************************/
 app.get('/api/get-latest/:sensorName/:nReadings', async (req, res) => {
-  console.log(req.params.nReadings);
+  // console.log(req.params.nReadings);
   let doc = await Data.find({sensor_name: req.params.sensorName}).sort({time: -1}).limit(req.params.nReadings);
   res.status(201).json( doc );
 
