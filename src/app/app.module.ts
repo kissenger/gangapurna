@@ -11,6 +11,7 @@ import { TimeHistoryComponent } from './time-history/time-history.component';
 import { HttpService } from './shared/http.service';
 import { RhcritPipe } from './shared/rhcrit.pipe';
 import { RhiPipe } from './shared/rhi.pipe';
+import { AbsHumPipe } from './shared/ah.pipe';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { RhiPipe } from './shared/rhi.pipe';
     LatestComponent,
     RhcritPipe,
     RhiPipe,
+    AbsHumPipe,
     TimeHistoryComponent
   ],
   imports: [
@@ -30,6 +32,7 @@ import { RhiPipe } from './shared/rhi.pipe';
     HttpService,
     RhcritPipe,
     RhiPipe,
+    AbsHumPipe,
     ThemeService
   ],
   bootstrap: [AppComponent]

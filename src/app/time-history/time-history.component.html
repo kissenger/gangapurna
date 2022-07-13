@@ -26,5 +26,23 @@
       [colors]="chartColors"
       [legend]="chartLegend">
     </canvas>
+
+    <canvas baseChart
+      [datasets]="chartData['ah']"
+      [chartType]="'line'"
+      [labels]="chartLabels"
+      [options]="chartOptions['ah']"
+      [colors]="chartColors"
+      [legend]="chartLegend">
+    </canvas>
+
+    <canvas baseChart
+      [datasets]="chartData['press']"
+      [chartType]="'line'"
+      [labels]="chartLabels"
+      [options]="chartOptions['press']"
+      [colors]="chartColors"
+      [legend]="chartLegend">
+    </canvas>
 </div>
 

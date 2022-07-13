@@ -5,6 +5,7 @@ import { HttpService } from '../shared/http.service';
 import { Color, Label } from 'ng2-charts';
 import { ChartDataSets, ChartOptions} from 'chart.js';
 import { ActivatedRoute } from '@angular/router';
+import { AbsHumPipe } from '../shared/ah.pipe';
 
 
 @Component({
@@ -17,7 +18,8 @@ export class TimeHistoryComponent implements OnInit {
 
   public sensorData = [];
   public printData = [];
-  private sensors = ['ahtInside', 'ahtOutside'];
+  private sensors = ['ahtInside', 'ahtOutside', 'bmpOutside'];
+  private yLabel = {rh: 'RH [%]', ah: 'Abs H [g/m^3]', press: 'P [Pa]', temp: 'T [degC]', rhi: 'RHi [-]'};
   public chartData: ChartDataSets[] = [];
   public chartLabels: Label[] = [];
   public chartOptions: ChartOptions = {};
@@ -27,6 +29,7 @@ export class TimeHistoryComponent implements OnInit {
   constructor(
     public rhi: RhiPipe,
     public rhCrit: RhcritPipe,
+    public ah: AbsHumPipe,
     private http: HttpService,
     private route: ActivatedRoute,
   ) {  }
@@ -34,7 +37,6 @@ export class TimeHistoryComponent implements OnInit {
   async ngOnInit() {
 
     let nReadings = await this.getParams();
-    console.log(nReadings);
 
     for (let i = 0; i < this.sensors.length; i++) {
       let newData = await this.getSensorData(this.sensors[i], nReadings);
@@ -69,9 +71,7 @@ export class TimeHistoryComponent implements OnInit {
       compatible with Angular v8
     */
 
-    const chart_params = ['rhi', 'temp', 'rh'];
-
-    chart_params.forEach(param => {
+    ['rhi', 'temp', 'rh', 'ah'].forEach(param => {
 
       this.chartData[param] = [{
         data:  this.getTimeHistory(this.sensorData[0], param),
@@ -97,6 +97,25 @@ export class TimeHistoryComponent implements OnInit {
         label: 'ahtOutside'
       }];
 
+    });
+
+    this.chartData['press'] = [{
+      data:  this.getTimeHistory(this.sensorData[2], 'press'),
+      showLine: true,
+      borderWidth: 3,
+      lineTension: 0,
+      pointRadius: 0,
+      borderColor: 'rgba(100,100,255,0.5)',
+      pointBackgroundColor: 'rgba(100,100,255,0.5)',
+      backgroundColor: 'rgba(100,100,255,0.5)',
+      fill: false,
+      label: 'bmp180'
+    }];
+
+    // console.log(this.chartData);
+
+    ['rhi', 'temp', 'rh', 'press', 'ah'].forEach(param => {
+
       this.chartOptions[param] = {
         title: {
           display: false
@@ -107,7 +126,6 @@ export class TimeHistoryComponent implements OnInit {
           }, {
             scaleLabel: {
               display: true,
-              // labelString: param === 'rhi' ? '[-]' : param === 'temp' ? 'degC' : '%RH',
               lineHeight: 1,
               padding: 4,
               fontSize: 12
@@ -119,7 +137,7 @@ export class TimeHistoryComponent implements OnInit {
           yAxes: [{
             scaleLabel: {
               display: true,
-              labelString: param === 'rhi' ? '[-]' : param === 'temp' ? 'degC' : '%RH',
+              labelString: this.yLabel[param],
               lineHeight: 1,
               padding: 4,
               fontSize: 12
@@ -131,72 +149,29 @@ export class TimeHistoryComponent implements OnInit {
         },
         tooltips: {
           intersect: true
-        },
+        }
       };
-    })
-
-    // this.rhi_data =[ {
-    //   data:  this.getTimeHistory(this.sensorData[0], 'rhi'),
-    //   showLine: true,
-    //   borderWidth: 5,
-    //   lineTension: 0,
-    //   pointRadius: 0,
-    //   borderColor: 'rgba(255,100,100,0.5)',
-    //   pointBackgroundColor: 'rgba(255,100,100,0.5)',
-    //   backgroundColor: 'rgba(255,100,100,0.5)',
-    //   fill: false,
-    //   label: 'ahtInside'
-    // }, {
-    //   data:  this.getTimeHistory(this.sensorData[1], 'rhi'),
-    //   showLine: true,
-    //   borderWidth: 5,
-    //   lineTension: 0,
-    //   pointRadius: 0,
-    //   borderColor: 'rgba(100,100,255,0.5)',
-    //   pointBackgroundColor: 'rgba(100,100,255,0.5)',
-    //   backgroundColor: 'rgba(100,100,255,0.5)',
-    //   fill: false,
-    //   label: 'ahtOutside'
-    // } ];
-
-    // this.temp_data =[ {
-    //   data:  this.getTimeHistory(this.sensorData[0]),
-    //   showLine: true,
-    //   borderWidth: 5,
-    //   lineTension: 0,
-    //   pointRadius: 0,
-    //   borderColor: 'rgba(255,100,100,0.5)',
-    //   pointBackgroundColor: 'rgba(255,100,100,0.5)',
-    //   backgroundColor: 'rgba(255,100,100,0.5)',
-    //   fill: false,
-    //   label: 'ahtInside'
-    // }, {
-    //   data:  this.getTimeHistory(this.sensorData[1]),
-    //   showLine: true,
-    //   borderWidth: 5,
-    //   lineTension: 0,
-    //   pointRadius: 0,
-    //   borderColor: 'rgba(100,100,255,0.5)',
-    //   pointBackgroundColor: 'rgba(100,100,255,0.5)',
-    //   backgroundColor: 'rgba(100,100,255,0.5)',
-    //   fill: false,
-    //   label: 'ahtOutside'
-    // } ];
-
+    });
 
   };
 
 
   getTimeHistory(sensorDataArray, param) {
 
+    // TODO: should use map for this?
+
     let data = [];
     for (let i = 0; i < sensorDataArray.length; i++) {
       if (param === "rhi") {
-        data.push({x:sensorDataArray[i].time, y:  this.rhi.transform(sensorDataArray[i].rh, sensorDataArray[i].temp)});
+        data.push({x:sensorDataArray[i].time, y: this.rhi.transform(sensorDataArray[i].rh, sensorDataArray[i].temp)});
       } else if (param === "temp") {
-        data.push({x:sensorDataArray[i].time, y:  sensorDataArray[i].temp});
+        data.push({x:sensorDataArray[i].time, y: sensorDataArray[i].temp});
       } else if (param === "rh") {
-        data.push({x:sensorDataArray[i].time, y:  sensorDataArray[i].rh});
+        data.push({x:sensorDataArray[i].time, y: sensorDataArray[i].rh});
+      } else if (param == "press") {
+        data.push({x:sensorDataArray[i].time, y: sensorDataArray[i].press});
+      } else if (param == "ah") {
+        data.push({x:sensorDataArray[i].time, y: this.ah.transform(sensorDataArray[i].rh, sensorDataArray[i].temp)});
       }
     }
     return data;
