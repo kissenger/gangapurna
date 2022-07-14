@@ -28,6 +28,12 @@ cp env/.env nodejs
 cd nodejs
 forever start server.js
 
+****OR***
+forever list
+forever stop {{pid}}
+scripts/deploy.sshcd
+
+
 Nginx setup
 -----------
 vi /etc/nginx/sites-enabled/default
