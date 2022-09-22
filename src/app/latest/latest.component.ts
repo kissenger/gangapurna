@@ -45,7 +45,7 @@ export class LatestComponent implements OnInit {
       const sampleTime = new Date(newData[0].time).getTime()/1000/60;
       const currentTime = new Date().getTime()/1000/60;
       const rhi = this.rhi.transform(newData[0].rh, newData[0].temp);
-      newData[0].isTimeGood = (currentTime - sampleTime) < 15;
+      newData[0].isTimeGood = (currentTime - sampleTime) < 20;
       newData[0].rhiStatus = rhi < 1.0 ? 'good' : rhi < 1.03 ? 'ok' : 'bad';
       this.printData.push(newData[0]);
     }

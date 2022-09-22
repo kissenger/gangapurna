@@ -68,7 +68,10 @@ app.post('/api/new-data/', async (req, res) => {
  ******************************************************************/
 app.get('/api/get-latest/:sensorName/:nReadings', async (req, res) => {
   // console.log(req.params.nReadings);
-  let doc = await Data.find({sensor_name: req.params.sensorName, sensor_found: true, deployed: true}).sort({time: -1}).limit(req.params.nReadings);
+  let doc = await Data.find({sensor_name: req.params.sensorName}).sort({time: -1}).limit(req.params.nReadings);
+
+  // TODO: --> call a function here that will return a time history based on one sensor with accuracy to mins only,
+  // and then sensor values for each sensor - so that pressure is correlated to rh and temp for MR calculation
   res.status(201).json( doc );
 
 });

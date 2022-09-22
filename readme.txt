@@ -36,4 +36,7 @@ scripts/deploy.sshcd
 
 Nginx setup
 -----------
-vi /etc/nginx/sites-enabled/default
+sudo vi /etc/nginx/sites-enabled/default
+
+#view error logs
+tail /var/log/nginx/error.log

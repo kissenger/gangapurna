@@ -6,6 +6,8 @@ import { Color, Label } from 'ng2-charts';
 import { ChartDataSets, ChartOptions} from 'chart.js';
 import { ActivatedRoute } from '@angular/router';
 import { AbsHumPipe } from '../shared/ah.pipe';
+import { MixRatioPipe } from '../shared/mr.pipe';
+import { DewPointPipe } from '../shared/dp.pipe';
 
 
 @Component({
@@ -19,7 +21,7 @@ export class TimeHistoryComponent implements OnInit {
   public sensorData = [];
   public printData = [];
   private sensors = ['ahtInside', 'ahtOutside', 'bmpOutside'];
-  private yLabel = {rh: 'RH [%]', ah: 'Abs H [g/m^3]', press: 'P [Pa]', temp: 'T [degC]', rhi: 'RHi [-]'};
+  private yLabel = {rh: 'RH [%]', ah: 'Abs H [g/m^3]', press: 'P [Pa]', temp: 'T [degC]', rhi: 'RHi [-]', mr: 'Mix Ratio [g/kg]'};
   public chartData: ChartDataSets[] = [];
   public chartLabels: Label[] = [];
   public chartOptions: ChartOptions = {};
@@ -32,6 +34,7 @@ export class TimeHistoryComponent implements OnInit {
     public ah: AbsHumPipe,
     private http: HttpService,
     private route: ActivatedRoute,
+    private dp: DewPointPipe
   ) {  }
 
   async ngOnInit() {
@@ -71,7 +74,7 @@ export class TimeHistoryComponent implements OnInit {
       compatible with Angular v8
     */
 
-    ['rhi', 'temp', 'rh', 'ah'].forEach(param => {
+    ['rhi', 'temp', 'rh', 'ah', 'dp'].forEach(param => {
 
       this.chartData[param] = [{
         data:  this.getTimeHistory(this.sensorData[0], param),
@@ -112,9 +115,9 @@ export class TimeHistoryComponent implements OnInit {
       label: 'bmp180'
     }];
 
-    // console.log(this.chartData);
+    console.log(this.chartData);
 
-    ['rhi', 'temp', 'rh', 'press', 'ah'].forEach(param => {
+    ['rhi', 'temp', 'rh', 'press', 'ah', 'dp'].forEach(param => {
 
       this.chartOptions[param] = {
         title: {
@@ -172,6 +175,8 @@ export class TimeHistoryComponent implements OnInit {
         data.push({x:sensorDataArray[i].time, y: sensorDataArray[i].press});
       } else if (param == "ah") {
         data.push({x:sensorDataArray[i].time, y: this.ah.transform(sensorDataArray[i].rh, sensorDataArray[i].temp)});
+      } else if (param == "dp") {
+        data.push({x:sensorDataArray[i].time, y: this.dp.transform(sensorDataArray[i].rh, sensorDataArray[i].temp)});
       }
     }
     return data;

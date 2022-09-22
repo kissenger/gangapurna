@@ -12,6 +12,8 @@ import { HttpService } from './shared/http.service';
 import { RhcritPipe } from './shared/rhcrit.pipe';
 import { RhiPipe } from './shared/rhi.pipe';
 import { AbsHumPipe } from './shared/ah.pipe';
+import { MixRatioPipe } from './shared/mr.pipe';
+import { DewPointPipe } from './shared/dp.pipe';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,9 @@ import { AbsHumPipe } from './shared/ah.pipe';
     LatestComponent,
     RhcritPipe,
     RhiPipe,
+    MixRatioPipe,
     AbsHumPipe,
+    DewPointPipe,
     TimeHistoryComponent
   ],
   imports: [
@@ -32,6 +36,8 @@ import { AbsHumPipe } from './shared/ah.pipe';
     HttpService,
     RhcritPipe,
     RhiPipe,
+    MixRatioPipe,
+    DewPointPipe,
     AbsHumPipe,
     ThemeService
   ],
