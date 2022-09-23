@@ -15,7 +15,7 @@ forever stop {{pid}}
 git fetch --all
 git reset --hard origin/master
 
-# if there are new dependenc ies to install dont forget to:
+# if there are new dependencies to install dont forget to:
 npm install
 npm list grep {{package name}}
 
@@ -31,7 +31,7 @@ forever start server.js
 ****OR***
 forever list
 forever stop {{pid}}
-scripts/deploy.sshcd
+sh deploy-script.sh
 
 
 Nginx setup
@@ -40,3 +40,14 @@ sudo vi /etc/nginx/sites-enabled/default
 
 #view error logs
 tail /var/log/nginx/error.log
+
+Node server
+-----------
+In deployment, run forever server as above.
+For debugging its useful to see output messages so run:
+cd nodejs
+npm run server
+
+To stop can use:
+sudo ss -lptn
+sudo kill -9 {{pid}}
