@@ -20,7 +20,7 @@ npm install
 npm list grep {{package name}}
 
 # if front end was changed then need to rebuild
-ng build --prod
+ng build --prod --base-href /iot/
 
 # setup environments and start servers
 sudo /etc/init.d/nginx reload
