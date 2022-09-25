@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  PROTOCOL: 'http',
+  PROTOCOL: 'https',
   BACKEND_URL: 'www.thingummy.cc/iot/api',
 };

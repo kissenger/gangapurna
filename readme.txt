@@ -33,6 +33,8 @@ forever list
 forever stop {{pid}}
 sh deploy-script.sh
 
+check forever logs:
+forever list --> lists logfiles
 
 Nginx setup
 -----------
