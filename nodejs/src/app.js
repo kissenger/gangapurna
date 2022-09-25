@@ -28,8 +28,7 @@ app.use( (req, res, next) => {
 });
 app.use(bodyParser.json());
 app.use((req, res, next) => {
-  // debugMsg(`${req.method}: ${req.originalUrl}`);
-  console.log()
+  console.log(`${req.method}: ${req.originalUrl}`);
   next();
 })
 
