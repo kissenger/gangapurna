@@ -7,7 +7,8 @@ npm install
 cd /home/ivyterrace/trailscape/nodejs
 npm install
 echo "deploy-script.sh --> copy environment files"
-cp -r /home/ivyterrace/iot/env/environments /home/ivyterrace/iot/src
+# environment files are within git archive for this project so following line not needed
+# cp -r /home/ivyterrace/iot/env/environments /home/ivyterrace/iot/src
 cp /home/ivyterrace/iot/env/.env /home/ivyterrace/iot/nodejs
 echo "deploy-script.sh --> build angular"
 cd /home/ivyterrace/iot
