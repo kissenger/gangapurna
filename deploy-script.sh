@@ -1,9 +1,17 @@
-# not convinced that running as script works, because need to wait for ngbuild to finish
+echo "deploy-script.sh --> fetching from git"
 git fetch --all
 git reset --hard origin/master
+echo "deploy-script.sh --> update npm installs"
+cd /home/ivyterrace/trailscape
+npm install
+cd /home/ivyterrace/trailscape/nodejs
+npm install
+echo "deploy-script.sh --> copy environment files"
+cp -r /home/ivyterrace/iot/env/environments /home/ivyterrace/iot/src
+cp /home/ivyterrace/iot/env/.env /home/ivyterrace/iot/nodejs
+echo "deploy-script.sh --> build angular"
+cd /home/ivyterrace/iot
 ng build --prod --base-href /iot/
-#not needed unless conf file is changed?
-sudo /etc/init.d/nginx reload
-cp env/.env nodejs
-cd nodejs
-forever start server.js
+cd /home/ivyterrace/iot
+echo "deploy-script.sh --> complete"
+echo "==========================================="
