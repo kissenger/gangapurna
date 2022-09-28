@@ -58,6 +58,7 @@ app.post('/api/new-data/', async (req, res) => {
   for (let i = 0; i < dataArr.length; i++) {
     await Data.create( dataArr[i] );
   }
+  res.status(201).json({"hello": "world"});
 
 });
 
