@@ -44,7 +44,7 @@ mongoose.connection
   .once('open', () => console.log('MongoDB connected') );
 
 app.get('/api/ping/', async (req, res) => {
-  res.status(201).json({"hello": "world"});
+  res.status(200).json({"hello": "world"});
 })
 
 /*****************************************************************
@@ -55,10 +55,12 @@ app.post('/api/new-data/', async (req, res) => {
 //  const data = req.body.data;
   console.log(req.body);
   let dataArr = req.body.data;
-  for (let i = 0; i < dataArr.length; i++) {
-    await Data.create( dataArr[i] );
-  }
-  res.status(201).send("OK");
+  try {
+    await Data.create(dataArr);
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).send();
+  };
 
 });
 
