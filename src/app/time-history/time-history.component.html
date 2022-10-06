@@ -1,57 +1,14 @@
+
 <hr>
-<div>
+
+<div *ngFor="let chart of chartQuantities[zone]">
     <canvas baseChart
-        [datasets]="chartData['rhi']"
+        [datasets]="chartData[chart.quantity]"
         [chartType]="'line'"
         [labels]="chartLabels"
-        [options]="chartOptions['rhi']"
         [colors]="chartColors"
+        [options]="chartOptions[chart.quantity]"
         [legend]="chartLegend">
-    </canvas>
-
-    <canvas baseChart
-      [datasets]="chartData['temp']"
-      [chartType]="'line'"
-      [labels]="chartLabels"
-      [options]="chartOptions['temp']"
-      [colors]="chartColors"
-      [legend]="chartLegend">
-    </canvas>
-
-    <canvas baseChart
-      [datasets]="chartData['rh']"
-      [chartType]="'line'"
-      [labels]="chartLabels"
-      [options]="chartOptions['rh']"
-      [colors]="chartColors"
-      [legend]="chartLegend">
-    </canvas>
-
-    <canvas baseChart
-      [datasets]="chartData['ah']"
-      [chartType]="'line'"
-      [labels]="chartLabels"
-      [options]="chartOptions['ah']"
-      [colors]="chartColors"
-      [legend]="chartLegend">
-    </canvas>
-
-    <canvas baseChart
-      [datasets]="chartData['dp']"
-      [chartType]="'line'"
-      [labels]="chartLabels"
-      [options]="chartOptions['dp']"
-      [colors]="chartColors"
-      [legend]="chartLegend">
-    </canvas>
-
-    <canvas baseChart
-      [datasets]="chartData['press']"
-      [chartType]="'line'"
-      [labels]="chartLabels"
-      [options]="chartOptions['press']"
-      [colors]="chartColors"
-      [legend]="chartLegend">
     </canvas>
 </div>
 

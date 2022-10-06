@@ -6,8 +6,6 @@ import { Color, Label } from 'ng2-charts';
 import { ChartDataSets, ChartOptions} from 'chart.js';
 import { ActivatedRoute } from '@angular/router';
 import { AbsHumPipe } from '../shared/ah.pipe';
-import { MixRatioPipe } from '../shared/mr.pipe';
-import { DewPointPipe } from '../shared/dp.pipe';
 
 
 @Component({
@@ -18,10 +16,39 @@ import { DewPointPipe } from '../shared/dp.pipe';
 
 export class TimeHistoryComponent implements OnInit {
 
-  public sensorData = [];
-  public printData = [];
-  private sensors = ['ahtInside', 'ahtOutside', 'bmpOutside'];
-  private yLabel = {rh: 'RH [%]', ah: 'Abs H [g/m^3]', press: 'P [Pa]', temp: 'T [degC]', rhi: 'RHi [-]', mr: 'Mix Ratio [g/kg]'};
+  // public sensorData = [];
+  // public printData = [];
+
+  private chartQuantities = {
+    house: [
+      { quantity: 'temp', sensors: [{name: 'Living Room'}, {name: 'dallasOutside'}] }
+    ],
+    garage: [
+      { quantity: 'temp', sensors: [{name: 'dallasStoreRoom'}, {name: 'dallasOutside'}] },
+      { quantity: 'rh', sensors: [{name: 'ahtStoreRoom'}] },
+      { quantity: 'ah', sensors: [{name:'ahtStoreRoom'}] },
+      { quantity: 'press', sensors: [{name:'bmpStoreRoom'}] },
+    ]
+  };
+
+  private yAxisLabels = {
+    rh: 'Rel Hmty [%]',
+    ah: 'Abs Hmty [g/m^3]',
+    temp: 'T [' + String.fromCharCode(176) + 'C]',
+    rhi: 'Rel Hmty Idx [-]',
+    press: 'P (@ sea level) [Pa]'
+  };
+
+  chartLineRGBA= {
+    'dallasStoreRoom': 'rgba(255, 100, 100, 0.5)',
+    'dallasOutside': 'rgba(100, 100, 255, 0.5)',
+    'ahtStoreRoom': 'rgba(255, 100, 100, 0.5)',
+    'bmpStoreRoom': 'rgba(255, 100, 100, 0.5)',
+    'Living Room': 'rgba(255, 100, 100, 0.5)',
+  }
+
+  private zone: string;
+
   public chartData: ChartDataSets[] = [];
   public chartLabels: Label[] = [];
   public chartOptions: ChartOptions = {};
@@ -33,35 +60,41 @@ export class TimeHistoryComponent implements OnInit {
     public rhCrit: RhcritPipe,
     public ah: AbsHumPipe,
     private http: HttpService,
-    private route: ActivatedRoute,
-    private dp: DewPointPipe
+    private route: ActivatedRoute
   ) {  }
 
   async ngOnInit() {
 
-    let nReadings = await this.getParams();
+    // let urlParams = await this.getParams();
 
-    for (let i = 0; i < this.sensors.length; i++) {
-      let newData = await this.getSensorData(this.sensors[i], nReadings);
-      this.sensorData.push(newData);
-    }
+    this.route.params.subscribe( async (urlParams) => {
 
-    this.updateChart();
+      this.zone = urlParams.zone;
+
+      for (const cq of this.chartQuantities[this.zone]) {
+        cq.xAxisLabel = 'Date';
+        cq.yAxisLabel = this.yAxisLabels[cq.quantity]
+        for (const sensor of cq.sensors) {
+          const dataBuff = await this.getSensorData(sensor.name, urlParams.startDate, urlParams.endDate);
+          sensor.data = this.getTimeHistory(dataBuff, cq.quantity);
+          sensor.colour = this.chartLineRGBA[sensor.name];
+        }
+      }
+
+      console.log(this.chartQuantities[this.zone])
+      this.updateChart();
+
+    })
   }
 
-  getSensorData(sname: string, n: number) {
+
+  getSensorData(sname: string, sd: string, ed: string) {
     return new Promise<any>( (res, rej) => {
-      this.http.getLatestSensorData(sname, n).subscribe(
+      this.http.getLatestSensorData(sname, sd, ed).subscribe(
         (response) => {
           res(response);
         }
       );
-    });
-  }
-
-  getParams() {
-    return new Promise<any>( (res, rej) => {
-      this.route.params.subscribe( (params) => res(params.nReadings));
     });
   }
 
@@ -74,52 +107,23 @@ export class TimeHistoryComponent implements OnInit {
       compatible with Angular v8
     */
 
-    ['rhi', 'temp', 'rh', 'ah', 'dp'].forEach(param => {
+    this.chartQuantities[this.zone].forEach(chart => {
 
-      this.chartData[param] = [{
-        data:  this.getTimeHistory(this.sensorData[0], param),
-        showLine: true,
-        borderWidth: 3,
-        lineTension: 0,
-        pointRadius: 0,
-        borderColor: 'rgba(255,100,100,0.5)',
-        pointBackgroundColor: 'rgba(255,100,100,0.5)',
-        backgroundColor: 'rgba(255,100,100,0.5)',
-        fill: false,
-        label: 'ahtInside'
-      }, {
-        data:  this.getTimeHistory(this.sensorData[1], param),
-        showLine: true,
-        borderWidth: 3,
-        lineTension: 0,
-        pointRadius: 0,
-        borderColor: 'rgba(100,100,255,0.5)',
-        pointBackgroundColor: 'rgba(100,100,255,0.5)',
-        backgroundColor: 'rgba(100,100,255,0.5)',
-        fill: false,
-        label: 'ahtOutside'
-      }];
+      this.chartData[chart.quantity] = chart.sensors.map( (sensor) => ({
+          data:  sensor.data,
+          showLine: true,
+          borderWidth: 3,
+          lineTension: 0,
+          pointRadius: 0,
+          borderColor: this.chartLineRGBA[sensor.name],
+          pointBackgroundColor: this.chartLineRGBA[sensor.name],
+          backgroundColor: this.chartLineRGBA[sensor.name],
+          fill: false,
+          label: sensor.name
+        })
+      )
 
-    });
-
-    this.chartData['press'] = [{
-      data:  this.getTimeHistory(this.sensorData[2], 'press'),
-      showLine: true,
-      borderWidth: 3,
-      lineTension: 0,
-      pointRadius: 0,
-      borderColor: 'rgba(100,100,255,0.5)',
-      pointBackgroundColor: 'rgba(100,100,255,0.5)',
-      backgroundColor: 'rgba(100,100,255,0.5)',
-      fill: false,
-      label: 'bmp180'
-    }];
-
-    console.log(this.chartData);
-
-    ['rhi', 'temp', 'rh', 'press', 'ah', 'dp'].forEach(param => {
-
-      this.chartOptions[param] = {
+      this.chartOptions[chart.quantity] = {
         title: {
           display: false
         },
@@ -140,7 +144,7 @@ export class TimeHistoryComponent implements OnInit {
           yAxes: [{
             scaleLabel: {
               display: true,
-              labelString: this.yLabel[param],
+              labelString: chart.yAxisLabel,
               lineHeight: 1,
               padding: 4,
               fontSize: 12
@@ -154,37 +158,28 @@ export class TimeHistoryComponent implements OnInit {
           intersect: true
         }
       };
+
     });
 
-  };
+  }
 
 
   getTimeHistory(sensorDataArray, param) {
 
-    // TODO: should use map for this?
-
-    let data = [];
-    for (let i = 0; i < sensorDataArray.length; i++) {
-      if (param === "rhi") {
-        data.push({x:sensorDataArray[i].time, y: this.rhi.transform(sensorDataArray[i].rh, sensorDataArray[i].temp)});
-      } else if (param === "temp") {
-        data.push({x:sensorDataArray[i].time, y: sensorDataArray[i].temp});
-      } else if (param === "rh") {
-        data.push({x:sensorDataArray[i].time, y: sensorDataArray[i].rh});
-      } else if (param == "press") {
-        data.push({x:sensorDataArray[i].time, y: sensorDataArray[i].press});
-      } else if (param == "ah") {
-        data.push({x:sensorDataArray[i].time, y: this.ah.transform(sensorDataArray[i].rh, sensorDataArray[i].temp)});
-      } else if (param == "dp") {
-        data.push({x:sensorDataArray[i].time, y: this.dp.transform(sensorDataArray[i].rh, sensorDataArray[i].temp)});
-      }
+    switch (param) {
+      case 'temp':  return sensorDataArray.map( (d) => (  {x: d.time, y: d.temp}  ));
+      case 'press': return sensorDataArray.map( (d) => (  {x: d.time, y: d.press} ));
+      case 'rh':    return sensorDataArray.map( (d) => (  {x: d.time, y: d.rh}    ));
+      case 'rhi':   return sensorDataArray.map( (d) => (  {x: d.time, y: this.rhi.transform(d.rh, d.temp)} ));
+      case 'ah':    return sensorDataArray.map( (d) => (  {x: d.time, y: this.ah.transform( d.rh, d.temp)}  ));
     }
-    return data;
   }
 
 
 
-  }
+
+
+}
 
 
 

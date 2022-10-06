@@ -18,7 +18,7 @@ export class LatestComponent implements OnInit {
   public sensorData = [];
   public printData = [];
   private rhCritTemps = [0, 2, 2.01, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20 ,22, 23, 24, 40];
-  private sensors = ['ahtInside', 'ahtOutside'];
+  private sensors = ['ahtInside', 'dallasOutside'];
   public chartData: ChartDataSets[] = [];
   public chartLabels: Label[] = [];
   public chartOptions: ChartOptions = {};
@@ -36,10 +36,10 @@ export class LatestComponent implements OnInit {
   async ngOnInit() {
 
 
-    let nReadings = await this.getParams();
+    let dates = await this.getParams();
 
     for (let i = 0; i < this.sensors.length; i++) {
-      let newData = await this.getSensorData(this.sensors[i], nReadings);
+      let newData = await this.getSensorData(this.sensors[i], dates.startDate, dates.endDate);
       this.sensorData.push(newData);
 
       const sampleTime = new Date(newData[0].time).getTime()/1000/60;
@@ -50,19 +50,20 @@ export class LatestComponent implements OnInit {
       this.printData.push(newData[0]);
     }
 
+    console.log(this.printData);
+
     this.updateChart();
   }
 
-  getSensorData(sname: string, n: number) {
+  getSensorData(sname: string, sd: string, ed: string) {
     return new Promise<any>( (res, rej) => {
-      this.http.getLatestSensorData(sname, n).subscribe(
+      this.http.getLatestSensorData(sname, sd, ed).subscribe(
         (response) => {
           res(response);
         }
       );
     });
   }
-
   getParams() {
     return new Promise<any>( (res, rej) => {
       this.route.params.subscribe( (params) => res(params.nReadings));
