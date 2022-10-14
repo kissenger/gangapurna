@@ -17,11 +17,39 @@
   justify-content: center;
   min-width: 100vh;
 } */
-.centered {
+/* .centered {
   position: absolute;
   height: 300px;
   width: 600px;
   top: 0%;
   left: 50%;
   transform: translate(-50%, 0);
+} */
+/* .myChart {
+  position: relative;
+  height: null;
+  width:50vw;
+  border:1px red solid;
+} */
+
+table, th, td {
+  border: 1px solid lightgray;
+  border-collapse: collapse;
+}
+
+.cssGood {
+  background-color: lightgreen;
+}
+
+.cssOK {
+  background-color: orange;
+}
+
+.cssBad {
+  background-color: red;
+}
+
+.spacer {
+  height: 50px;
+  border: 1px red solid;
 }

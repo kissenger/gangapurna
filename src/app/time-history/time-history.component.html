@@ -2,13 +2,31 @@
 <hr>
 
 <div *ngFor="let chart of chartQuantities[zone]">
-    <canvas baseChart
-        [datasets]="chartData[chart.quantity]"
-        [chartType]="'line'"
-        [labels]="chartLabels"
-        [colors]="chartColors"
-        [options]="chartOptions[chart.quantity]"
-        [legend]="chartLegend">
+    <canvas baseChart width="1" height="1"
+      [data]="chartData[chart.quantity]"
+      [options]="chartOptions[chart.quantity]"
+    >
     </canvas>
+
+    <table class="dataTable" width="100%">
+      <tr>
+        <td>Sensor</td>
+        <td>Time</td>
+        <td>Last</td>
+        <td>Min</td>
+        <td>Max</td>
+      </tr>
+      <tr *ngFor="let sensor of chart.sensors">
+        <td>{{sensor.name}}</td>
+        <td [ngClass]="sensor.isTimeGood ? 'cssGood' : 'cssBad'">{{sensor.lastTimestampFormatted}}</td>
+        <td>{{sensor.lastReading | number: '1.1-1'}}</td>
+        <td>{{sensor.minReading | number: '1.1-1'}}</td>
+        <td>{{sensor.maxReading | number: '1.1-1'}}</td>
+      </tr>
+    </table>
+
+    <div class="spacer">
+      <hr>
+    </div>
 </div>
 

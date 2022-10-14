@@ -1,12 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ChartsModule, ThemeService } from 'ng2-charts';
+import { NgChartsModule, NgChartsConfiguration  } from 'ng2-charts';
 
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LatestComponent } from './latest/latest.component';
+import { RedirectComponent } from './redirect/redirect.component';
 import { TimeHistoryComponent } from './time-history/time-history.component';
 import { HttpService } from './shared/http.service';
 import { RhcritPipe } from './shared/rhcrit.pipe';
@@ -19,6 +20,7 @@ import { DewPointPipe } from './shared/dp.pipe';
   declarations: [
     AppComponent,
     LatestComponent,
+    RedirectComponent,
     RhcritPipe,
     RhiPipe,
     MixRatioPipe,
@@ -30,7 +32,7 @@ import { DewPointPipe } from './shared/dp.pipe';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ChartsModule
+    NgChartsModule
   ],
   providers: [
     HttpService,
@@ -39,7 +41,7 @@ import { DewPointPipe } from './shared/dp.pipe';
     MixRatioPipe,
     DewPointPipe,
     AbsHumPipe,
-    ThemeService
+    { provide: NgChartsConfiguration, useValue: { generateColors: false }}
   ],
   bootstrap: [AppComponent]
 })

@@ -2,11 +2,14 @@ import { Component, OnInit, ViewChild} from '@angular/core';
 import { RhiPipe } from 'src/app/shared/rhi.pipe';
 import { RhcritPipe } from 'src/app/shared/rhcrit.pipe';
 import { HttpService } from '../shared/http.service';
-import { Color, Label } from 'ng2-charts';
-import { ChartDataSets, ChartOptions} from 'chart.js';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AbsHumPipe } from '../shared/ah.pipe';
 
+// import * as ChartJS from 'chart.js';
+import { Chart, ChartConfiguration, ChartEvent, ChartType, ChartOptions, ChartData, TimeScale } from 'chart.js';
+// import { BaseChartDirective } from 'ng2-charts';
+// import { Chart } from 'chart.js';
+import 'chartjs-adapter-moment';
 
 @Component({
   selector: 'app-latest',
@@ -19,14 +22,28 @@ export class TimeHistoryComponent implements OnInit {
   // public sensorData = [];
   // public printData = [];
 
-  private chartQuantities = {
+
+
+  public chartQuantities = {
     house: [
-      { quantity: 'temp', sensors: [{name: 'Living Room'}, {name: 'dallasOutside'}] }
+      {
+        quantity: 'temp',
+        sensors: [
+          {name: 'Living Room'},
+          {name: 'dallasOutside'},
+          {name: 'Hall'},
+          {name: 'Hall Radiator'},
+          {name: 'Kitchen'},
+          {name: 'Gordons Office'},
+          {name: 'dallasStoreRoom'}
+        ]
+      }
     ],
     garage: [
       { quantity: 'temp', sensors: [{name: 'dallasStoreRoom'}, {name: 'dallasOutside'}] },
       { quantity: 'rh', sensors: [{name: 'ahtStoreRoom'}] },
       { quantity: 'ah', sensors: [{name:'ahtStoreRoom'}] },
+      { quantity: 'rhi', sensors: [{name:'ahtStoreRoom'}] },
       { quantity: 'press', sensors: [{name:'bmpStoreRoom'}] },
     ]
   };
@@ -44,59 +61,51 @@ export class TimeHistoryComponent implements OnInit {
     'dallasOutside': 'rgba(100, 100, 255, 0.5)',
     'ahtStoreRoom': 'rgba(255, 100, 100, 0.5)',
     'bmpStoreRoom': 'rgba(255, 100, 100, 0.5)',
-    'Living Room': 'rgba(255, 100, 100, 0.5)',
+    'Living Room': 'rgba(150, 100, 255, 0.5)',
+    'Kitchen': 'rgba(255, 100, 255, 0.5)',
+    'Hall': 'rgba(100, 255, 100, 0.5)',
+    'Hall Radiator': 'rgba(100, 150, 100, 0.5)',
+    'Gordons Office': 'rgba(100, 50, 100, 0.5)'
   }
 
-  private zone: string;
-
-  public chartData: ChartDataSets[] = [];
-  public chartLabels: Label[] = [];
-  public chartOptions: ChartOptions = {};
-  public chartColors: Color[] = [];
-  public chartLegend = true;
+  private chartTimeSpan: number;
+  private interval;
+  public zone: string;
+  public chartData: { [key: string]: ChartData } = {};
+  public chartOptions: { [key: string]: ChartOptions} = {};
+  private startDate: string;
+  private endDate: string;
+  private REFRESH_INTERVAL = 15 * 60 * 1000;
 
   constructor(
     public rhi: RhiPipe,
     public rhCrit: RhcritPipe,
     public ah: AbsHumPipe,
     private http: HttpService,
-    private route: ActivatedRoute
-  ) {  }
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+  }
 
   async ngOnInit() {
 
-    // let urlParams = await this.getParams();
-
     this.route.params.subscribe( async (urlParams) => {
-
       this.zone = urlParams.zone;
-
-      for (const cq of this.chartQuantities[this.zone]) {
-        cq.xAxisLabel = 'Date';
-        cq.yAxisLabel = this.yAxisLabels[cq.quantity]
-        for (const sensor of cq.sensors) {
-          const dataBuff = await this.getSensorData(sensor.name, urlParams.startDate, urlParams.endDate);
-          sensor.data = this.getTimeHistory(dataBuff, cq.quantity);
-          sensor.colour = this.chartLineRGBA[sensor.name];
-        }
-      }
-
-      console.log(this.chartQuantities[this.zone])
+      this.chartTimeSpan = Math.floor((Date.parse(urlParams.endDate) - Date.parse(urlParams.startDate)) / 86400000);
+      this.startDate = urlParams.startDate;
+      this.endDate = urlParams.endDate;
+      await this.getChartQuantities();
       this.updateChart();
-
     })
+
+    this.interval = setInterval( async () => {
+      await this.getChartQuantities();
+      this.updateChart();
+   }, this.REFRESH_INTERVAL);
+
   }
 
-
-  getSensorData(sname: string, sd: string, ed: string) {
-    return new Promise<any>( (res, rej) => {
-      this.http.getLatestSensorData(sname, sd, ed).subscribe(
-        (response) => {
-          res(response);
-        }
-      );
-    });
-  }
 
 
 
@@ -107,60 +116,84 @@ export class TimeHistoryComponent implements OnInit {
       compatible with Angular v8
     */
 
+
     this.chartQuantities[this.zone].forEach(chart => {
 
-      this.chartData[chart.quantity] = chart.sensors.map( (sensor) => ({
-          data:  sensor.data,
-          showLine: true,
+      console.log(chart.quantity);
+
+      this.chartData[chart.quantity] =  <ChartConfiguration['data']> {
+        datasets: chart.sensors.map( s => ({
+          type: 'line',
+          data: s.data,
+          label: s.name,
+          pointRadius: this.chartTimeSpan <= 1.5 ? 1 : 0,
+          pointBackgroundColor: 'rgba(255,255,255,1)',
+          backgroundColor: this.chartLineRGBA[s.name],
+          borderColor: this.chartLineRGBA[s.name],
           borderWidth: 3,
-          lineTension: 0,
-          pointRadius: 0,
-          borderColor: this.chartLineRGBA[sensor.name],
-          pointBackgroundColor: this.chartLineRGBA[sensor.name],
-          backgroundColor: this.chartLineRGBA[sensor.name],
-          fill: false,
-          label: sensor.name
-        })
-      )
+          tension: 0.5
+        }))
+      }
 
       this.chartOptions[chart.quantity] = {
-        title: {
-          display: false
-        },
+        // maintainAspectRatio: true,
+        // responsive: true,
+        // aspectRatio: 0.5,  // this doesnt work - AR is controlled by height and width tags on canvas in html
         scales: {
-          xAxes: [{
-            type: 'time'
-          }, {
-            scaleLabel: {
+          x: {
+            type: 'time',
+            // time: {
+            //   unit: 'day',
+            // }
+          },
+          y: {
+            beginAtZero: false,
+            title: {
               display: true,
-              lineHeight: 1,
-              padding: 4,
-              fontSize: 12
-            },
-            ticks: {
-              fontSize: 10
+              text: chart.yAxisLabel
             }
-          }],
-          yAxes: [{
-            scaleLabel: {
-              display: true,
-              labelString: chart.yAxisLabel,
-              lineHeight: 1,
-              padding: 4,
-              fontSize: 12
-            },
-            ticks: {
-              fontSize: 10
-            }
-          }]
-        },
-        tooltips: {
-          intersect: true
+          }
         }
-      };
+      }
 
     });
 
+    // console.log(this.chartData);
+    // console.log(this.chartOptions);
+
+  }
+
+  async getChartQuantities() {
+    return new Promise<void>( async (res, rej) => {
+      for (const cq of this.chartQuantities[this.zone]) {
+        cq.xAxisLabel = 'Date';
+        cq.yAxisLabel = this.yAxisLabels[cq.quantity]
+        for (const sensor of cq.sensors) {
+          const dataBuff = await this.getSensorData(sensor.name, this.startDate, this.endDate);
+          sensor.data = this.getTimeHistory(dataBuff, cq.quantity);
+          sensor.colour = this.chartLineRGBA[sensor.name];
+          const lastTime = new Date(sensor.data[0].x);
+          sensor.lastTimestampFormatted = lastTime.toLocaleString();
+          sensor.isTimeGood = new Date().getTime()/1000/60 - lastTime.getTime()/1000/60 < 20;
+          sensor.lastReading = sensor.data[0].y;
+          sensor.minReading = Math.min(...sensor.data.map( d => d.y ));
+          sensor.maxReading = Math.max(...sensor.data.map( d => d.y ));
+        }
+      }
+      res();
+    })
+  }
+
+
+
+  getSensorData(sname: string, sd: string, ed: string) {
+    return new Promise<any>( (res, rej) => {
+      // console.log(sname, sd, ed)
+      this.http.getLatestSensorData(sname, sd, ed).subscribe( (response) => {
+          res(response);
+        }
+      );
+    });
   }
 
 
