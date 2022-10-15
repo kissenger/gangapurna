@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { NgChartsModule, NgChartsConfiguration  } from 'ng2-charts';
 
 import { HttpClientModule } from '@angular/common/http';
+import {APP_BASE_HREF} from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -41,7 +42,8 @@ import { DewPointPipe } from './shared/dp.pipe';
     MixRatioPipe,
     DewPointPipe,
     AbsHumPipe,
-    { provide: NgChartsConfiguration, useValue: { generateColors: false }}
+    { provide: NgChartsConfiguration, useValue: { generateColors: false }},
+    { provide: APP_BASE_HREF, useValue: "/iot" }
   ],
   bootstrap: [AppComponent]
 })

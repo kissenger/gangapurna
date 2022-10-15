@@ -18,6 +18,6 @@ cp /home/ivyterrace/iot/env/.env /home/ivyterrace/iot/nodejs
 echo "${YELLOW_BOLD}deploy-script.sh --> build angular${NC}"
 cd /home/ivyterrace/iot
 # when deployed to subfolder and subfolder is used in the URI, --base-href option is required
-ng build --prod
+ng build --configuration "production"
 cd /home/ivyterrace/iot
 echo "${YELLOW_BOLD}deploy-script.sh --> complete${NC}"
