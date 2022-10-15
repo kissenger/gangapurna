@@ -51,5 +51,5 @@ table, th, td {
 
 .spacer {
   height: 50px;
-  border: 1px red solid;
+  /* border: 1px red solid; */
 }
