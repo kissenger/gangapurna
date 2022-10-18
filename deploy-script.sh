@@ -20,4 +20,5 @@ cd /home/ivyterrace/iot
 # when deployed to subfolder and subfolder is used in the URI, --base-href option is required
 ng build --configuration "production"
 cd /home/ivyterrace/iot
+forever restartall
 echo "${YELLOW_BOLD}deploy-script.sh --> complete${NC}"
