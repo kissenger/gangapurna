@@ -33,6 +33,9 @@ forever list
 forever stop {{pid}}
 sh deploy-script.sh
 
+****OR***
+forever restartall
+
 check forever logs:
 forever list --> lists logfiles
 

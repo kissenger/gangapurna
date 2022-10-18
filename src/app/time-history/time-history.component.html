@@ -1,14 +1,14 @@
 
 <hr>
 
-<div *ngFor="let chart of chartQuantities[zone]">
+<div *ngFor="let chart of defineCharts[zone]; index as i">
     <canvas baseChart width="1" height="1"
-      [data]="chartData[chart.quantity]"
-      [options]="chartOptions[chart.quantity]"
-    >
+      [data]="chartData[i]"
+      [type]="chartType[i]"
+      [options]="chartOpts[i]" >
     </canvas>
 
-    <table class="dataTable" width="100%">
+    <table *ngIf="chart.xAxis=='time'" class="dataTable" width="100%">
       <tr>
         <td>Sensor</td>
         <td>Time</td>
@@ -16,17 +16,17 @@
         <td>Min</td>
         <td>Max</td>
       </tr>
-      <tr *ngFor="let sensor of chart.sensors">
-        <td>{{sensor.name}}</td>
-        <td [ngClass]="sensor.isTimeGood ? 'cssGood' : 'cssBad'">{{sensor.lastTimestampFormatted}}</td>
-        <td>{{sensor.lastReading | number: '1.1-1'}}</td>
-        <td>{{sensor.minReading | number: '1.1-1'}}</td>
-        <td>{{sensor.maxReading | number: '1.1-1'}}</td>
+      <tr *ngFor="let series of chart.series">
+        <td>{{series.sensor}}</td>
+        <td [ngClass]="series.isTimeGood ? 'cssGood' : 'cssBad'">{{series.lastTimestampFormatted}}</td>
+        <td>{{series.lastReading | number: '1.1-1'}}</td>
+        <td>{{series.minReading | number: '1.1-1'}}</td>
+        <td>{{series.maxReading | number: '1.1-1'}}</td>
       </tr>
     </table>
 
-    <div class="spacer">
-      <hr>
-    </div>
-</div>
+    <div class="spacer"></div>
+    <hr>
+    <div class="spacer"></div>
+  </div>
 

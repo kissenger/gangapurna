@@ -7,7 +7,6 @@ import {APP_BASE_HREF} from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LatestComponent } from './latest/latest.component';
 import { RedirectComponent } from './redirect/redirect.component';
 import { TimeHistoryComponent } from './time-history/time-history.component';
 import { HttpService } from './shared/http.service';
@@ -20,7 +19,6 @@ import { DewPointPipe } from './shared/dp.pipe';
 @NgModule({
   declarations: [
     AppComponent,
-    LatestComponent,
     RedirectComponent,
     RhcritPipe,
     RhiPipe,
