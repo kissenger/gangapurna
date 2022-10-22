@@ -9,6 +9,7 @@ const dataSchema = mongoose.Schema({
   temp: {type: Number},
   rh_pre: {type: Number},
   temp_pre: {type: Number},
+  heater_on: {type: Boolean},
   press: {type: Number}
 
 })
