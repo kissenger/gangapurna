@@ -15,6 +15,7 @@ import { RhiPipe } from './shared/rhi.pipe';
 import { AbsHumPipe } from './shared/ah.pipe';
 import { MixRatioPipe } from './shared/mr.pipe';
 import { DewPointPipe } from './shared/dp.pipe';
+import { RhCorrectedPipe } from './shared/rhCorrected.pipe';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { DewPointPipe } from './shared/dp.pipe';
     MixRatioPipe,
     DewPointPipe,
     AbsHumPipe,
+    RhCorrectedPipe,
     { provide: NgChartsConfiguration, useValue: { generateColors: false }},
     { provide: APP_BASE_HREF, useValue: "/iot" }
   ],

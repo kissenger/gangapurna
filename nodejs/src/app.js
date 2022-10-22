@@ -73,19 +73,37 @@ app.get('/api/get-latest/:sensorName/:startDate/:endDate', async (req, res) => {
   let startDate = req.params.startDate + "T00:00:00Z";
   let endDate   = req.params.endDate + "T00:00:00Z";
 
-console.log(startDate);
-console.log(endDate);
+// console.log(startDate);
+// console.log(endDate);
 
   let doc = await Data.find(
-    {sensor_name: req.params.sensorName, deployed: true, time: {$gt: startDate, $lt: endDate}})
+    // {sensor_name: req.params.sensorName, deployed: true, time: {$gt: startDate, $lt: endDate}})
+    {sensor_name: req.params.sensorName, time: {$gt: startDate, $lt: endDate}})
     .sort({time: -1})
     .limit(req.params.nReadings);
-
+// console.log(doc);
   // TODO: --> call a function here that will return a time history based on one sensor with accuracy to mins only,
   // and then sensor values for each sensor - so that pressure is correlated to rh and temp for MR calculation
   res.status(201).json( doc );
 
 });
+
+app.get('/api/clean', async (req, res) => {
+
+  // const query = {sensor_name: "shtOutside", "rh_pre": { $exists: false}};
+  const query = {sensor_name: {$ne: "shtOutside"}, deployed: false};
+  // const query = {deployed: false};
+  /*
+  *  USE THIS LOOP FIRST TO CHECK WHAT YOU ARE SELECTING
+  */
+  // let docs = await Data.find(query);
+  // console.log(docs.length);
+
+  let docs = await Data.deleteMany(query);
+
+  res.status(201).json( docs );
+});
+
 
 
 module.exports = app;

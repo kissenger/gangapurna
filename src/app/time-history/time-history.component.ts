@@ -1,12 +1,15 @@
+import { DewPointPipe } from './../shared/dp.pipe';
 import { Component, OnInit, OnDestroy} from '@angular/core';
 import { RhiPipe } from 'src/app/shared/rhi.pipe';
 import { RhcritPipe } from 'src/app/shared/rhcrit.pipe';
+import { RhCorrectedPipe } from '../shared/rhCorrected.pipe';
 import { HttpService } from '../shared/http.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbsHumPipe } from '../shared/ah.pipe';
 
 import { ChartType, ChartOptions, ChartData } from 'chart.js';
 import 'chartjs-adapter-moment'; // this is needed by cgartjs - documentation is not very clear
+
 
 @Component({
   selector: 'app-latest',
@@ -42,75 +45,119 @@ export class TimeHistoryComponent implements OnInit {
   public defineCharts = {
     house: [
       {
-        xAxis: 'time',
-        yAxis: 'temp',
+        xAxisLabel: 'time',
+        yAxisLabel: 'temp',
         series: [
-          {sensor: 'Living Room',     lineColour: 'rgba(50, 50, 50, 0.5)'},
-          {sensor: 'dallasOutside',   lineColour: 'rgba(50, 50, 255, 0.5)'},
-          {sensor: 'Hall',            lineColour: 'rgba(50, 50, 100, 0.5)'},
-          {sensor: 'Hall Radiator',   lineColour: 'rgba(50, 100, 50, 0.5)'},
-          {sensor: 'Kitchen',         lineColour: 'rgba(50, 100, 100, 0.5)'},
-          {sensor: 'Gordons Office',  lineColour: 'rgba(100, 50, 50, 0.5)'},
-          {sensor: 'dallasStoreRoom', lineColour: 'rgba(100, 100, 50, 0.5)'}
+          {sensor: 'Living Room',     xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 50, 0.5)'},
+          {sensor: 'dallasOutside',   xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'},
+          {sensor: 'Hall',            xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 100, 0.5)'},
+          {sensor: 'Hall Radiator',   xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 100, 50, 0.5)'},
+          {sensor: 'Kitchen',         xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 100, 100, 0.5)'},
+          {sensor: 'Gordons Office',  xQty: 'time', yQty: 'temp', lineColour: 'rgba(100, 50, 50, 0.5)'},
+          {sensor: 'dallasStoreRoom', xQty: 'time', yQty: 'temp', lineColour: 'rgba(100, 100, 50, 0.5)'}
         ]
       }
     ],
     garage: [
       {
-        xAxis: 'temp',
-        yAxis: 'rh',
+        xAxisLabel: 'temp',
+        yAxisLabel: 'rh',
         series: [
-          { sensor: 'ahtStoreRoom', lastPointOnly: true, pointRadius: 3, pointColour: 'rgba(50, 50, 100, 1)', lineColour: 'rgba(50, 50, 100, 0.5)' },
-          { sensor: 'rhCritCurve', data: this.rhCritCurve, lineColour: 'rgba(50, 150, 100, 0.5)', lineTension: 0 }
+          {
+            sensor: 'ahtStoreRoom',
+            xQty: 'temp',
+            yQty: 'rh',
+            lastPointOnly: true,
+            pointRadius: 3,
+            pointColour: 'rgba(50, 50, 100, 1)',
+            lineColour: 'rgba(50, 50, 100, 0.5)'
+          },
+          {
+            sensor: 'rhCritCurve',
+            xQty: 'temp',
+            yQty: 'rh',
+            data: this.rhCritCurve,
+            lineColour: 'rgba(50, 150, 100, 0.5)',
+            lineTension: 0 }
         ]
       }, {
-         xAxis: 'time',
-         yAxis: 'temp',
+         xAxisLabel: 'time',
+         yAxisLabel: 'temp',
          series: [
-          { sensor: 'dallasStoreRoom', lineColour: 'rgba(100, 100, 50, 0.5)'},
-          { sensor: 'dallasOutside', lineColour: 'rgba(50, 50, 255, 0.5)'}
+          { sensor: 'dallasStoreRoom', xQty: 'time', yQty: 'temp', lineColour: 'rgba(100, 100, 50, 0.5)'},
+          { sensor: 'dallasOutside', xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'},
+          { sensor: 'ahtStoreRoom', xQty: 'time', yQty: 'dp', lineColour: 'rgba(175, 100, 50, 0.5)'},
         ]
       }, {
-        xAxis: 'time',
-        yAxis: 'rh',
+        xAxisLabel: 'time',
+        yAxisLabel: 'rh',
         series: [
-          { sensor: 'ahtStoreRoom', lineColour: 'rgba(150, 50, 100, 0.5)'}
+          { sensor: 'ahtStoreRoom', xQty: 'time', yQty: 'rh', lineColour: 'rgba(150, 50, 100, 0.5)'}
         ]
       }, {
-        xAxis: 'time',
-        yAxis: 'ah',
+        xAxisLabel: 'time',
+        yAxisLabel: 'ah',
         series: [
-          { sensor:'ahtStoreRoom', lineColour: 'rgba(150, 150, 100, 0.5)'}
+          { sensor:'ahtStoreRoom', xQty: 'time', yQty: 'ah', lineColour: 'rgba(150, 150, 100, 0.5)'}
         ]
       }, {
-        xAxis: 'time',
-        yAxis: 'rhi',
+        xAxisLabel: 'time',
+        yAxisLabel: 'rhi',
         series: [
-          {sensor:'ahtStoreRoom', lineColour: 'rgba(150, 255, 100, 0.5)'}
+          {sensor:'ahtStoreRoom', xQty: 'time', yQty: 'rhi', lineColour: 'rgba(150, 255, 100, 0.5)'}
         ]
       }, {
-        xAxis: 'time',
-        yAxis: 'press',
+        xAxisLabel: 'time',
+        yAxisLabel: 'press',
         series: [
-          {sensor:'bmpStoreRoom', lineColour: 'rgba(50, 50, 255, 0.5)'}
+          {sensor:'bmpStoreRoom', xQty: 'time', yQty: 'press', lineColour: 'rgba(50, 50, 255, 0.5)'}
         ]
       }
     ],
     outside: [
       {
-        xAxis: 'time',
-        yAxis: 'press',
+        xAxisLabel: 'time',
+        yAxisLabel: 'press',
         series: [
-          {sensor:'bmpStoreRoom', lineColour: 'rgba(255, 50, 255, 0.5)'}
+          {sensor:'bmpStoreRoom', xQty: 'time', yQty: 'press', lineColour: 'rgba(255, 50, 255, 0.5)'}
         ]
       }, {
-        xAxis: 'time',
-        yAxis: 'temp',
+        xAxisLabel: 'time',
+        yAxisLabel: 'temp',
         series: [
-          {sensor: 'dallasOutside', lineColour: 'rgba(50, 50, 255, 0.5)'}
+          {sensor: 'dallasOutside', xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'}
         ]
       }
-    ]
+    ],
+    shtTest: [
+      {
+        xAxisLabel: 'time',
+        yAxisLabel: 'rh',
+        series: [
+          {sensor: 'shtOutside',   xQty: 'time', yQty: 'rh',     lineColour: 'rgba(50, 50, 50, 0.5)'},
+          {sensor: 'shtOutside',   xQty: 'time', yQty: 'rh_pre',  lineColour: 'rgba(50, 50, 255, 0.5)'},
+          {sensor: 'shtOutside',   xQty: 'time', yQty: 'rhCorr',  lineColour: 'rgba(150, 50, 150, 0.5)'}
+        ]
+      },
+      {
+        xAxisLabel: 'time',
+        yAxisLabel: 'ah',
+        series: [
+          {sensor: 'shtOutside',      xQty: 'time', yQty: 'ah',     lineColour: 'rgba(50, 50, 50, 0.5)'},
+          {sensor: 'shtOutside',      xQty: 'time', yQty: 'ah_pre',  lineColour: 'rgba(50, 50, 255, 0.5)'}
+        ]
+      },
+      {
+        xAxisLabel: 'time',
+        yAxisLabel: 'temp',
+        series: [
+          {sensor: 'shtOutside',      xQty: 'time', yQty: 'temp',      lineColour: 'rgba(50, 50, 50, 0.5)'},
+          {sensor: 'shtOutside',      xQty: 'time', yQty: 'temp_pre',  lineColour: 'rgba(50, 50, 255, 0.5)'},
+          {sensor: 'shtOutside',      xQty: 'time', yQty: 'dp',        lineColour: 'rgba(255, 50, 50, 0.5)'},
+          {sensor: 'shtOutside',      xQty: 'time', yQty: 'dp_pre',    lineColour: 'rgba(255, 50, 255, 0.5)'}
+        ]
+      }
+    ],
   };
 
 
@@ -128,6 +175,8 @@ export class TimeHistoryComponent implements OnInit {
     public rhi: RhiPipe,
     public rhCrit: RhcritPipe,
     public ah: AbsHumPipe,
+    public dp: DewPointPipe,
+    public rhCorr: RhCorrectedPipe,
     private http: HttpService,
     private route: ActivatedRoute,
     private router: Router
@@ -174,21 +223,21 @@ export class TimeHistoryComponent implements OnInit {
       this.chartOpts[index] = {
         scales: {
           x: {
-            type: chart.xAxis === 'time' ? 'time' : 'linear',
+            type: chart.xAxisLabel === 'time' ? 'time' : 'linear',
             offset: false,
             grid: {
               offset: false
             },
             title: {
-              display: chart.xAxis !== 'time',
-              text: this.axisLabels[chart.xAxis]
+              display: chart.xAxisLabel !== 'time',
+              text: this.axisLabels[chart.xAxisLabel]
             }
           },
           y: {
             beginAtZero: false,
             title: {
               display: true,
-              text: this.axisLabels[chart.yAxis]
+              text: this.axisLabels[chart.yAxisLabel]
             }
           }
         }
@@ -205,8 +254,9 @@ export class TimeHistoryComponent implements OnInit {
         for (const s of chart.series) {
           const dataBuff = await this.getSensorData(s.sensor, this.startDate, this.endDate);
           if (!s.data) {
-            s.data = this.getDataArray(dataBuff, chart.xAxis, chart.yAxis);
+            s.data = this.getDataArray(dataBuff, s.xQty, s.yQty);
           }
+          console.log(s.data);
           const lastTime = new Date(s.data[0].x);
           s.lastTimestampFormatted = lastTime.toLocaleString();
           s.isTimeGood = new Date().getTime()/1000/60 - lastTime.getTime()/1000/60 < 20;
@@ -216,7 +266,7 @@ export class TimeHistoryComponent implements OnInit {
 
           // Apply styles to the series
           s.styles = {
-            label:                s.sensor,
+            label:                s.sensor + "-" + s.yQty,
             backgroundColor:      s.lineColour === undefined ? this.defaults.lineColour : s.lineColour,
             borderColor:          s.lineColour === undefined ? this.defaults.lineColour : s.lineColour,
             borderWidth:          s.lineWidth === undefined ? this.defaults.lineWidth : s.lineWidth,
@@ -225,7 +275,12 @@ export class TimeHistoryComponent implements OnInit {
             pointBackgroundColor: s.lineColour === undefined ? this.defaults.lineColour : s.lineColour,
             pointBorderWidth:     s.pointLineWidth === undefined ? this.defaults.pointLineWidth : s.pointLineWidth,
             pointStyle:           s.pointStyle === undefined ? this.defaults.pointStyle : s.pointStyle,
-            pointRadius:          s.pointRadius === undefined ? this.defaults.pointRadius : s.pointRadius
+            pointRadius:          s.
+            pointRadius === undefined ? this.defaults.pointRadius : s.pointRadius
+          }
+
+          s.labels = {
+
           }
 
           if ( s.lastPointOnly ) {
@@ -245,9 +300,9 @@ export class TimeHistoryComponent implements OnInit {
     return new Promise<any>( (res, rej) => {
       // console.log(sname, sd, ed)
       this.http.getLatestSensorData(sname, sd, ed).subscribe( (response) => {
+
           res(response);
-        }
-      );
+      });
     });
   }
 
@@ -255,18 +310,24 @@ export class TimeHistoryComponent implements OnInit {
   getDataArray(sensorDataArray, xParam: string, yParam: string) {
 
     // generic case where all axis have non-derived variables
-    if ( ['temp', 'press', 'rh'].includes(yParam) ) {
+    if ( ['temp', 'temp_pre', 'press', 'rh', 'rh_pre'].includes(yParam) ) {
       return sensorDataArray.map( (d) => (  {x: d[xParam], y: d[yParam]} ));
+
+    } else {
+    // if ( ['ah', 'dp', 'ah_pre', 'dp_pre'].includes(yParam) ) {
+      switch (yParam) {
+        case 'ah':          return sensorDataArray.map( (d) => (  {x: d[xParam], y: this.ah.transform( d.rh, d.temp)}  ));
+        case 'ah_pre':      return sensorDataArray.map( (d) => (  {x: d[xParam], y: this.ah.transform( d.rh_pre, d.temp_pre)}  ));
+        case 'dp':          return sensorDataArray.map( (d) => (  {x: d[xParam], y: this.dp.transform( d.rh, d.temp)}  ));
+        case 'dp_pre':      return sensorDataArray.map( (d) => (  {x: d[xParam], y: this.dp.transform( d.rh_pre, d.temp_pre)}  ));
+        case 'rhi':         return sensorDataArray.map( (d) => (  {x: d[xParam], y: this.rhi.transform(d.rh, d.temp)} ));
+        case 'rhi_pre':     return sensorDataArray.map( (d) => (  {x: d[xParam], y: this.rhi.transform(d.rh_pre, d.temp_pre)} ));
+        case 'rhCorr':      return sensorDataArray.map( (d) => (  {x: d[xParam], y: this.rhCorr.transform(d.rh, d.temp, d.temp_pre)} ));
+      }
+
     }
 
-    // deal with derived properties on the y - which are currently always plotted against time
-    if ( yParam === 'rhi' ) {
-      return sensorDataArray.map( (d) => (  {x: d.time, y: this.rhi.transform(d.rh, d.temp)} ));
-    }
 
-    if ( yParam === 'ah' ) {
-      return sensorDataArray.map( (d) => (  {x: d.time, y: this.ah.transform( d.rh, d.temp)}  ));
-    }
 
   }
 
