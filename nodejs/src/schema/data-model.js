@@ -7,6 +7,8 @@ const dataSchema = mongoose.Schema({
   deployed: {type: Boolean, required: true},
   rh: {type: Number},
   temp: {type: Number},
+  rh_pre: {type: Number},
+  temp_pre: {type: Number},
   press: {type: Number}
 
 })

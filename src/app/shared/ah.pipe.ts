@@ -12,9 +12,9 @@ export class AbsHumPipe implements PipeTransform {
     // https://www.hatchability.com/Vaisala.pdf
     // Careful with Temperature units in the above - T is sometimes degC and sometimes K
     // See also https://www.omnicalculator.com/physics/absolute-humidity
-    const A = 6.116441;
-    const m = 7.591386;
-    const Tn = 240.7263;  // K
+    // const A = 6.116441;
+    // const m = 7.591386;
+    // const Tn = 240.7263;  // K
     const C = 2.16679;    // gK/J
     const C1 = -7.85951783;
     const C2 = 1.84408259;
