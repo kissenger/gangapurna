@@ -27,7 +27,7 @@ export class TimeHistoryComponent implements OnInit {
     ah: 'Abs Hmty [g/m^3]',
     temp: 'T [' + String.fromCharCode(176) + 'C]',
     rhi: 'Rel Hmty Idx [-]',
-    press: 'P (@ sea level) [Pa]',
+    press: 'Pressure [Pa]',
     time: 'Time'
   };
 
@@ -84,9 +84,10 @@ export class TimeHistoryComponent implements OnInit {
          xAxisLabel: 'time',
          yAxisLabel: 'temp',
          series: [
-          { sensor: 'dallasStoreRoom', xQty: 'time', yQty: 'temp', lineColour: 'rgba(100, 100, 50, 0.5)'},
-          { sensor: 'dallasOutside', xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'},
-          { sensor: 'ahtStoreRoom', xQty: 'time', yQty: 'dp', lineColour: 'rgba(175, 100, 50, 0.5)'},
+          { sensor: 'dallasStoreRoom',  xQty: 'time', yQty: 'temp', lineColour: 'rgba(100, 100, 50, 0.5)'},
+          { sensor: 'dallasOutside',    xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'},
+          { sensor: 'ahtStoreRoom',     xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 150, 255, 0.5)'},
+          { sensor: 'ahtStoreRoom',     xQty: 'time', yQty: 'dp',   lineColour: 'rgba(255, 50, 50, 0.5)'},
         ]
       }, {
         xAxisLabel: 'time',
