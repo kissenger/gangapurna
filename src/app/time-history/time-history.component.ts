@@ -47,14 +47,14 @@ export class TimeHistoryComponent implements OnInit {
       {
         xAxisLabel: 'time',
         yAxisLabel: 'temp',
+        secondYAxis: 'true',
         series: [
           {sensor: 'Living Room',     xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 50, 0.5)'},
-          {sensor: 'dallasOutside',   xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'},
+          {sensor: 'shtOutside',      xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'},
           {sensor: 'Hall',            xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 100, 0.5)'},
-          {sensor: 'Hall Radiator',   xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 100, 50, 0.5)'},
+          {sensor: 'Hall Radiator',   xQty: 'time', yQty: 'temp', yAxisID: 'y2', lineColour: 'rgba(255, 0, 0, 0.5)', borderDash: [10,2]},
           {sensor: 'Kitchen',         xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 100, 100, 0.5)'},
           {sensor: 'Gordons Office',  xQty: 'time', yQty: 'temp', lineColour: 'rgba(100, 50, 50, 0.5)'},
-          {sensor: 'dallasStoreRoom', xQty: 'time', yQty: 'temp', lineColour: 'rgba(100, 100, 50, 0.5)'}
         ]
       }
     ],
@@ -73,6 +73,15 @@ export class TimeHistoryComponent implements OnInit {
             lineColour: 'rgba(50, 50, 100, 0.5)'
           },
           {
+            sensor: 'shtOutside',
+            xQty: 'temp',
+            yQty: 'rh',
+            lastPointOnly: true,
+            pointRadius: 3,
+            pointColour: 'rgba(150, 50, 100, 1)',
+            lineColour: 'rgba(150, 50, 100, 0.5)'
+          },
+          {
             sensor: 'rhCritCurve',
             xQty: 'temp',
             yQty: 'rh',
@@ -84,28 +93,24 @@ export class TimeHistoryComponent implements OnInit {
          xAxisLabel: 'time',
          yAxisLabel: 'temp',
          series: [
-          { sensor: 'dallasStoreRoom',  xQty: 'time', yQty: 'temp', lineColour: 'rgba(100, 100, 50, 0.5)'},
-          { sensor: 'dallasOutside',    xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'},
+          { sensor: 'shtOutside',  xQty: 'time', yQty: 'temp', lineColour: 'rgba(100, 100, 50, 0.5)'},
+          { sensor: 'shtOutside',    xQty: 'time', yQty: 'dp', lineColour: 'rgba(100, 50, 50, 0.5)'},
           { sensor: 'ahtStoreRoom',     xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 150, 255, 0.5)'},
-          { sensor: 'ahtStoreRoom',     xQty: 'time', yQty: 'dp',   lineColour: 'rgba(255, 50, 50, 0.5)'},
+          { sensor: 'ahtStoreRoom',     xQty: 'time', yQty: 'dp',   lineColour: 'rgba(50, 100, 255, 0.5)'},
         ]
       }, {
         xAxisLabel: 'time',
         yAxisLabel: 'rh',
         series: [
-          { sensor: 'ahtStoreRoom', xQty: 'time', yQty: 'rh', lineColour: 'rgba(150, 50, 100, 0.5)'}
+          { sensor: 'shtOutside', xQty: 'time', yQty: 'rh', lineColour: 'rgba(100, 100, 50, 0.5)'},
+          { sensor: 'ahtStoreRoom', xQty: 'time', yQty: 'rh', lineColour: 'rgba(50, 150, 255, 0.5)'},
         ]
       }, {
         xAxisLabel: 'time',
         yAxisLabel: 'ah',
         series: [
-          { sensor:'ahtStoreRoom', xQty: 'time', yQty: 'ah', lineColour: 'rgba(150, 150, 100, 0.5)'}
-        ]
-      }, {
-        xAxisLabel: 'time',
-        yAxisLabel: 'rhi',
-        series: [
-          {sensor:'ahtStoreRoom', xQty: 'time', yQty: 'rhi', lineColour: 'rgba(150, 255, 100, 0.5)'}
+          { sensor: 'shtOutside', xQty: 'time', yQty: 'ah', lineColour: 'rgba(100, 100, 50, 0.5)'},
+          { sensor: 'ahtStoreRoom', xQty: 'time', yQty: 'ah', lineColour: 'rgba(50, 150, 255, 0.5)'},
         ]
       }, {
         xAxisLabel: 'time',
@@ -126,40 +131,10 @@ export class TimeHistoryComponent implements OnInit {
         xAxisLabel: 'time',
         yAxisLabel: 'temp',
         series: [
-          {sensor: 'dallasOutside', xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'}
+          {sensor: 'ahtStoreRoom', xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'}
         ]
       }
-    ],
-    shtTest: [
-      {
-        xAxisLabel: 'time',
-        yAxisLabel: 'rh',
-        series: [
-          {sensor: 'shtOutside',   xQty: 'time', yQty: 'rh',     lineColour: 'rgba(50, 50, 50, 0.5)'},
-          // {sensor: 'shtOutside',   xQty: 'time', yQty: 'rh_pre',  lineColour: 'rgba(50, 50, 255, 0.5)'},
-          // {sensor: 'shtOutside',   xQty: 'time', yQty: 'rhCorr',  lineColour: 'rgba(150, 50, 150, 0.5)'}
-        ]
-      },
-      {
-        xAxisLabel: 'time',
-        yAxisLabel: 'ah',
-        series: [
-          {sensor: 'shtOutside',      xQty: 'time', yQty: 'ah',     lineColour: 'rgba(50, 50, 50, 0.5)'},
-          // {sensor: 'shtOutside',      xQty: 'time', yQty: 'ah_pre',  lineColour: 'rgba(50, 50, 255, 0.5)'}
-        ]
-      },
-      {
-        xAxisLabel: 'time',
-        yAxisLabel: 'temp',
-        series: [
-          {sensor: 'shtOutside',      xQty: 'time', yQty: 'temp',      lineColour: 'rgba(50, 50, 50, 0.5)'},
-          // {sensor: 'shtOutside',      xQty: 'time', yQty: 'temp_pre',  lineColour: 'rgba(50, 50, 255, 0.5)'},
-          {sensor: 'shtOutside',      xQty: 'time', yQty: 'dp',        lineColour: 'rgba(255, 50, 50, 0.5)'},
-          // {sensor: 'shtOutside',      xQty: 'time', yQty: 'dp_pre',    lineColour: 'rgba(255, 50, 255, 0.5)'},
-          {sensor: 'dallasTestOnly',  xQty: 'time', yQty: 'temp',    lineColour: 'rgba(100, 100, 255, 0.5)'}
-        ]
-      }
-    ],
+    ]
   };
 
 
@@ -240,6 +215,15 @@ export class TimeHistoryComponent implements OnInit {
             title: {
               display: true,
               text: this.axisLabels[chart.yAxisLabel]
+            },
+          },
+          y2: {
+            beginAtZero: false,
+            position: 'right',
+            display: chart.secondYAxis ? chart.secondYAxis : false,
+            title: {
+              display: chart.secondYAxis ? chart.secondYAxis : false,
+              text: this.axisLabels[chart.yAxisLabel]
             }
           }
         }
@@ -258,7 +242,7 @@ export class TimeHistoryComponent implements OnInit {
           if (!s.data) {
             s.data = this.getDataArray(dataBuff, s.xQty, s.yQty);
           }
-          console.log(s.data);
+
           const lastTime = new Date(s.data[0].x);
           s.lastTimestampFormatted = lastTime.toLocaleString();
           s.isTimeGood = new Date().getTime()/1000/60 - lastTime.getTime()/1000/60 < 20;
@@ -269,9 +253,11 @@ export class TimeHistoryComponent implements OnInit {
           // Apply styles to the series
           s.styles = {
             label:                s.sensor + "-" + s.yQty,
+            yAxisID:              s.yAxisID ? s.yAxisID : 'y',
             backgroundColor:      s.lineColour === undefined ? this.defaults.lineColour : s.lineColour,
             borderColor:          s.lineColour === undefined ? this.defaults.lineColour : s.lineColour,
             borderWidth:          s.lineWidth === undefined ? this.defaults.lineWidth : s.lineWidth,
+            borderDash:           s.borderDash ? s.borderDash : [5,0],
             tension:              s.lineTension === undefined ? this.defaults.lineTension : s.lineTension,
             pointBorderColor:     s.pointColour === undefined ? this.defaults.pointColour : s.pointColour,
             pointBackgroundColor: s.lineColour === undefined ? this.defaults.lineColour : s.lineColour,
