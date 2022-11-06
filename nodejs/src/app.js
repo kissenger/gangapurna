@@ -55,7 +55,7 @@ app.get('/api/nas/status', async (req, res) => {
   // const { stdout: nodeVersion } = await exec('node --version');
   // console.log("node version:", nodeVersion);
   // res.status(200).json({"hello": "world"});
-  if (fs.existsSync('~/data/scripts')) {
+  if (fs.existsSync('/home/gordon/data/scripts')) {
     res.writeHead(200, { 'Content-Type':'text/html'});
     res.end("<div><p>NAS is online :)<p></div>");
   } else {
@@ -68,20 +68,21 @@ app.get('/api/nas/status', async (req, res) => {
 app.get('/api/nas/wake', async (req, res) => {
   let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-  if (!fs.existsSync('~/data/scripts')) {
+  res.writeHead(200, { 'Content-Type':'text/html'});
+  res.write("<p>Checking connection.</p>");
 
-    shell.exec('~/iot/nodejs/src/bash-script/nasWake.sh');
+  if (!fs.existsSync('/home/gordon/data/scripts')) {
+    res.write("<p>Connection not found, sending wake command.</p>");
+    shell.exec('/home/gordon/iot/nodejs/src/bash-script/nasWake.sh');
 
-    res.writeHead(200, { 'Content-Type':'text/html'});
-    res.write("WOL command sent, waiting (can take up to 30s) ");
-
+    res.write("<p>Command sent, waiting for connection (can take up to 30s).");
     while (!fs.existsSync('~/data/scripts')) {
-      await sleep(2000);
-      res.write(".");
+      await sleep(5000);
+      res.write("<p>Still waiting.");
     }
   }
 
-  res.end("NAS is online :)");
+  res.end("Connection found, NAS in online :)");
 
   // if (fs.existsSync('./src/schema')) {
   //   res.writeHead(200, { 'Content-Type':'text/html'});
