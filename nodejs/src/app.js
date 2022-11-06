@@ -15,6 +15,7 @@ const dotenv = require('dotenv').config();
 const fs = require('fs');
 // const exec = util.promisify(require('child_process').exec);
 const shell = require('shelljs');
+const { replaceTsWithNgInErrors } = require('@angular/compiler-cli/src/ngtsc/diagnostics');
 if (dotenv.error) {
   console.log(`ERROR from app.js: ${dotenv.error}`);
   process.exit(0);
@@ -66,23 +67,31 @@ app.get('/api/nas/status', async (req, res) => {
 })
 
 app.get('/api/nas/wake', async (req, res) => {
-  let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   res.writeHead(200, { 'Content-Type':'text/html'});
-  res.write("<p>Checking connection.</p>");
-
   if (!fs.existsSync('/home/gordon/data/scripts')) {
-    res.write("<p>Connection not found, sending wake command.</p>");
-    shell.exec('/home/gordon/iot/nodejs/src/bash-script/nasWake.sh');
-
-    res.write("<p>Command sent, waiting for connection (can take up to 30s).");
-    while (!fs.existsSync('~/data/scripts')) {
-      await sleep(5000);
-      res.write("<p>Still waiting.");
-    }
+    res.write("NAS is offline :(<br>");
+    res.write("Wake command sent (refresh page to update status)");
+  } else {
+    res.write("NAS is connected :)")
   }
+  res.end();
 
-  res.end("Connection found, NAS in online :)");
+  // res.writeHead(200, { 'Content-Type':'text/html'});
+  // res.write("Checking connection<br>");
+
+  // if (!fs.existsSync('/home/gordon/data/scripts')) {
+  //   res.write("Connection not found, sending wake command<br>");
+  //   shell.exec('/home/gordon/iot/nodejs/src/bash-script/nasWake.sh');
+
+  //   res.write("Command sent, waiting for connection (can take up to 30s)<br>");
+  //   while (!fs.existsSync('/home/gordon/data/scripts')) {
+  //     await sleep(5000);
+  //     res.write("Still waiting<br>");
+  //   }
+  // }
+
+  // res.end("Connection found, NAS in online :)");
 
   // if (fs.existsSync('./src/schema')) {
   //   res.writeHead(200, { 'Content-Type':'text/html'});
