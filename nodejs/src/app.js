@@ -11,6 +11,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Data = require('./schema/data-model').Data;
 const dotenv = require('dotenv').config();
+const util = require('util');
+const fs = require('fs');
+const exec = util.promisify(require('child_process').exec);
 if (dotenv.error) {
   console.log(`ERROR from app.js: ${dotenv.error}`);
   process.exit(0);
@@ -45,6 +48,50 @@ mongoose.connection
 
 app.get('/api/ping/', async (req, res) => {
   res.status(200).json({"hello": "world"});
+})
+
+app.get('/api/nas/status', async (req, res) => {
+  // const { stdout: nodeVersion } = await exec('node --version');
+  // console.log("node version:", nodeVersion);
+  // res.status(200).json({"hello": "world"});
+  if (fs.existsSync('~/data/scripts')) {
+    res.writeHead(200, { 'Content-Type':'text/html'});
+    res.end("<div><p>NAS is online :)<p></div>");
+  } else {
+    res.writeHead(200, { 'Content-Type':'text/html'});
+    res.end("<div><p>NAS is offline :(<p></div>");
+  }
+
+})
+
+app.get('/api/nas/wake', async (req, res) => {
+  let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+  if (!fs.existsSync('~/data/scripts')) {
+
+    const { stdout: nodeVersion } = await exec('sh ./src/bash-scripts/nasWake.sh');
+
+    res.writeHead(200, { 'Content-Type':'text/html'});
+    res.write("WOL command sent, waiting (can take up to 30s) ");
+
+    while (!fs.existsSync('~/data/scripts')) {
+      await sleep(2000);
+      res.write(".");
+    }
+  }
+
+  res.end("NAS is online :)");
+
+  // if (fs.existsSync('./src/schema')) {
+  //   res.writeHead(200, { 'Content-Type':'text/html'});
+  //   res.write("<div><p>Waiting to connect :)<p></div>");
+  //   await sleep(5000);
+  //   res.end("<div><p>NAS is online :)<p></div>");
+  // } else {
+  //   res.writeHead(200, { 'Content-Type':'text/html'});
+  //   res.end("<div><p>NAS is offline :(<p></div>");
+  // }
+
 })
 
 /*****************************************************************
