@@ -52,7 +52,7 @@ export class TimeHistoryComponent implements OnInit {
           {sensor: 'Living Room',     xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 50, 0.5)'},
           {sensor: 'shtOutside',      xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'},
           {sensor: 'Hall',            xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 100, 0.5)'},
-          {sensor: 'Hall Radiator',   xQty: 'time', yQty: 'temp', yAxisID: 'y2', lineColour: 'rgba(255, 0, 0, 0.5)', borderDash: [10,2]},
+          {sensor: 'Hall Radiator',   xQty: 'time', yQty: 'temp', yAxisID: 'y2', lineColour: 'rgba(255, 0, 0, 0.5)', borderDash: [10,2], lineWidth: 1},
           {sensor: 'Kitchen',         xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 100, 100, 0.5)'},
           {sensor: 'Gordons Office',  xQty: 'time', yQty: 'temp', lineColour: 'rgba(100, 50, 50, 0.5)'},
         ]
@@ -221,6 +221,9 @@ export class TimeHistoryComponent implements OnInit {
             beginAtZero: false,
             position: 'right',
             display: chart.secondYAxis ? chart.secondYAxis : false,
+            grid: {
+              drawOnChartArea:false
+            },
             title: {
               display: chart.secondYAxis ? chart.secondYAxis : false,
               text: this.axisLabels[chart.yAxisLabel]
