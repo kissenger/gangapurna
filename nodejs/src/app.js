@@ -11,9 +11,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Data = require('./schema/data-model').Data;
 const dotenv = require('dotenv').config();
-const util = require('util');
+// const util = require('util');
 const fs = require('fs');
-const exec = util.promisify(require('child_process').exec);
+// const exec = util.promisify(require('child_process').exec);
+const shell = require('shelljs');
 if (dotenv.error) {
   console.log(`ERROR from app.js: ${dotenv.error}`);
   process.exit(0);
@@ -69,7 +70,7 @@ app.get('/api/nas/wake', async (req, res) => {
 
   if (!fs.existsSync('~/data/scripts')) {
 
-    const { stdout: nodeVersion } = await exec('sh ./src/bash-scripts/nasWake.sh');
+    shell.exec('~/iot/nodejs/src/bash-script/nasWake.sh');
 
     res.writeHead(200, { 'Content-Type':'text/html'});
     res.write("WOL command sent, waiting (can take up to 30s) ");
