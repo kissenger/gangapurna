@@ -14,7 +14,7 @@ if ping -w1 -s 1 -c 1 $NAS_IP > /dev/null; then
 else
   echo false
   sudo etherwake -i eth0 $NAS_MAC
-  until ! ping -w1 -s 1 -c 1 $NAS_IP & > /dev/null ; [[ "$SECONDS" -gt $TIMEOUT  ]]; do :; done
+  until ! ping -w1 -s 1 -c 1 $NAS_IP &> /dev/null ; [[ "$SECONDS" -gt $TIMEOUT  ]]; do :; done
   sudo mount -a
   echo true
 fi
