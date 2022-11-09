@@ -31,7 +31,7 @@ export class RedirectComponent implements OnInit {
       console.log(urlParams);
 
 
-      if ( !urlParams.zone || !['garage', 'house', 'outside', 'api'].includes(urlParams.zone))  {
+      if ( !urlParams.zone || !['garage', 'house', 'outside', 'nas'].includes(urlParams.zone))  {
         // if zone is not defined or of unexpected value, redirect to default path
         this.router.navigate([`/time-history/house/${startDate}/${endDate}`]);
       } else {
