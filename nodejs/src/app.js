@@ -52,56 +52,26 @@ app.get('/api/ping/', async (req, res) => {
 })
 
 app.get('/api/nas/status', async (req, res) => {
-  // const { stdout: nodeVersion } = await exec('node --version');
-  // console.log("node version:", nodeVersion);
-  // res.status(200).json({"hello": "world"});
-  if (fs.existsSync('/home/gordon/data/scripts')) {
-    res.writeHead(200, { 'Content-Type':'text/html'});
-    res.end("<div><p>NAS is online :)<p></div>");
+
+  const isOnline = shell.exec('/home/gordon/nasWake.sh false');
+
+  if ( isOnline === 'true' ) {
+    res.send("NAS is offline, WOL sent ...");
   } else {
-    res.writeHead(200, { 'Content-Type':'text/html'});
-    res.end("<div><p>NAS is offline :(<p></div>");
+    res.send("NAS is connected :)")
   }
 
 })
 
 app.get('/api/nas/wake', async (req, res) => {
 
-  res.writeHead(200, { 'Content-Type':'text/html'});
-  if (!fs.existsSync(process.env.NAS_PATH)) {
-    shell.exec('/home/gordon/iot/nodejs/src/bash-script/nasWake.sh');
-    res.write("NAS is offline :(<br>");
-    res.write("Wake command sent (refresh page to update status)");
+  const isOnline = shell.exec('/home/gordon/nasWake.sh true');
+
+  if ( isOnline === 'true' ) {
+    res.send("NAS is offline, WOL sent ...");
   } else {
-    res.write("NAS is connected :)")
+    res.send("NAS is connected :)")
   }
-  res.end();
-
-  // res.writeHead(200, { 'Content-Type':'text/html'});
-  // res.write("Checking connection<br>");
-
-  // if (!fs.existsSync('/home/gordon/data/scripts')) {
-  //   res.write("Connection not found, sending wake command<br>");
-  //
-
-  //   res.write("Command sent, waiting for connection (can take up to 30s)<br>");
-  //   while (!fs.existsSync('/home/gordon/data/scripts')) {
-  //     await sleep(5000);
-  //     res.write("Still waiting<br>");
-  //   }
-  // }
-
-  // res.end("Connection found, NAS in online :)");
-
-  // if (fs.existsSync('./src/schema')) {
-  //   res.writeHead(200, { 'Content-Type':'text/html'});
-  //   res.write("<div><p>Waiting to connect :)<p></div>");
-  //   await sleep(5000);
-  //   res.end("<div><p>NAS is online :)<p></div>");
-  // } else {
-  //   res.writeHead(200, { 'Content-Type':'text/html'});
-  //   res.end("<div><p>NAS is offline :(<p></div>");
-  // }
 
 })
 
