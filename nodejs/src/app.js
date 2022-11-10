@@ -51,29 +51,33 @@ app.get('/api/ping/', async (req, res) => {
   res.status(200).json({"hello": "world"});
 })
 
-app.get('/api/nas/status', async (req, res) => {
 
-  const isOnline = shell.exec('/home/gordon/nasWake.sh false');
 
-  if ( isOnline === 'true' ) {
-    res.send("NAS is offline, WOL sent ...");
-  } else {
-    res.send("NAS is connected :)")
+app.get('/api/nas/:command', async (req, res) => {
+
+  const isOnline = shell.exec(`/home/gordon/nas.sh ${req.params.command}`);
+  if ( !['status', 'wake', 'sleep'].includes(req.params.command) ) {
+    console.log(true)
+    return res.status(401).send();
   }
+
+  res.writeHead(200, {'Content-Type': 'text/html'});
+  if ( isOnline === 'true' ) {
+    res.write('NAS is online :)<br>');
+    if ( req.params.command === 'sleep' ) {
+      res.write('Sleep command has been sent...');
+    }
+  } else {
+    res.write('NAS is offline :(<br>');
+    if ( req.params.command === 'wake' ) {
+      res.write('WOL command has been sent...');
+    }
+  }
+  res.end();
 
 })
 
-app.get('/api/nas/wake', async (req, res) => {
 
-  const isOnline = shell.exec('/home/gordon/nasWake.sh true');
-
-  if ( isOnline === 'true' ) {
-    res.send("NAS is offline, WOL sent ...");
-  } else {
-    res.send("NAS is connected :)")
-  }
-
-})
 
 /*****************************************************************
  * import a route from a gpx file
