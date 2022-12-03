@@ -1,5 +1,5 @@
 import { DewPointPipe } from './../shared/dp.pipe';
-import { Component, OnInit, OnDestroy} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { RhiPipe } from 'src/app/shared/rhi.pipe';
 import { RhcritPipe } from 'src/app/shared/rhcrit.pipe';
 import { RhCorrectedPipe } from '../shared/rhCorrected.pipe';
@@ -206,6 +206,8 @@ export class TimeHistoryComponent implements OnInit {
       };
 
       this.chartOpts[index] = {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
           x: {
             type: chart.xAxisLabel === 'time' ? 'time' : 'linear',

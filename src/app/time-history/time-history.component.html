@@ -1,32 +1,44 @@
 
-<hr>
+<div *ngFor="let chart of defineCharts[zone]; index as i" class="chart-container d-flex flex-column ">
 
-<div *ngFor="let chart of defineCharts[zone]; index as i">
-    <canvas baseChart width="1" height="1"
-      [data]="chartData[i]"
-      [type]="chartType[i]"
-      [options]="chartOpts[i]" >
-    </canvas>
+    <!-- <canvas baseChart width="1" height="1" -->
+    <div class="sub-chart-container flex-grow-1">
+      <canvas class="d-md-none " baseChart
+          [data]="chartData[i]"
+          [type]="chartType[i]"
+          [options]="chartOpts[i]" >
+      </canvas>
+      <canvas class="d-none d-md-block" baseChart
+          [data]="chartData[i]"
+          [type]="chartType[i]"
+          [options]="chartOpts[i]" >
+      </canvas>
+    </div>
 
-    <table *ngIf="chart.xAxisLabel=='time'" class="dataTable" width="100%">
-      <tr>
-        <td>Sensor</td>
-        <td>Time</td>
-        <td>Last</td>
-        <td>Min</td>
-        <td>Max</td>
-      </tr>
-      <tr *ngFor="let series of chart.series">
-        <td>{{series.sensor}}-{{series.yQty}}</td>
-        <td [ngClass]="series.isTimeGood ? 'cssGood' : 'cssBad'">{{series.lastTimestampFormatted}}</td>
-        <td>{{series.lastReading | number: '1.1-1'}}</td>
-        <td>{{series.minReading | number: '1.1-1'}}</td>
-        <td>{{series.maxReading | number: '1.1-1'}}</td>
-      </tr>
-    </table>
+    <div class="table-container d-flex justify-content-center">
+      <table *ngIf="chart.xAxisLabel=='time'" class="dataTable">
+        <tr>
+          <td>Sensor</td>
+          <td>Time</td>
+          <td>Last</td>
+          <td>Min</td>
+          <td>Max</td>
+        </tr>
+        <tr *ngFor="let series of chart.series">
 
-    <div class="spacer"></div>
-    <hr>
-    <div class="spacer"></div>
+          <td><small>{{series.sensor}}-{{series.yQty}}</small></td>
+          <td [ngClass]="series.isTimeGood ? 'cssGood' : 'cssBad'"><small>{{series.lastTimestampFormatted}}</small></td>
+          <td><small>{{series.lastReading | number: '1.1-1'}}</small></td>
+          <td><small>{{series.minReading | number: '1.1-1'}}</small></td>
+          <td><small>{{series.maxReading | number: '1.1-1'}}</small></td>
+
+        </tr>
+      </table>
+    </div>
+
+
   </div>
 
+  <!-- <div class="spacer"></div>
+  <hr>
+  <div class="spacer"></div> -->
