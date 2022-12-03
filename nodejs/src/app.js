@@ -56,21 +56,23 @@ app.get('/api/ping/', async (req, res) => {
 app.get('/api/nas/:command', async (req, res) => {
 
   const isOnline = shell.exec(`/home/gordon/nas.sh ${req.params.command}`);
+  // const isOnline=true;
   if ( !['status', 'wake', 'sleep'].includes(req.params.command) ) {
-    console.log(true)
     return res.status(401).send();
   }
-
   res.writeHead(200, {'Content-Type': 'text/html'});
-  if ( isOnline === 'true' ) {
-    res.write('NAS is online :)<br>');
+
+  if ( isOnline.stdout === 'true\n' ) {
     if ( req.params.command === 'sleep' ) {
-      res.write('Sleep command has been sent...');
+      res.write('NAS is going to sleep ...');
+    } else {
+      res.write('NAS is online :)');
     }
   } else {
-    res.write('NAS is offline :(<br>');
     if ( req.params.command === 'wake' ) {
-      res.write('WOL command has been sent...');
+      res.write('NAS is waking up ...');
+    } else {
+      res.write('NAS is offline :(');
     }
   }
   res.end();

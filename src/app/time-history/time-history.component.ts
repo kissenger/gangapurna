@@ -55,6 +55,8 @@ export class TimeHistoryComponent implements OnInit {
           {sensor: 'Hall Radiator',   xQty: 'time', yQty: 'temp', yAxisID: 'y2', lineColour: 'rgba(255, 0, 0, 0.5)', borderDash: [10,2], lineWidth: 1},
           {sensor: 'Kitchen',         xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 100, 100, 0.5)'},
           {sensor: 'Gordons Office',  xQty: 'time', yQty: 'temp', lineColour: 'rgba(100, 50, 50, 0.5)'},
+          {sensor: 'The Hovel',         xQty: 'time', yQty: 'temp', lineColour: 'rgba(100, 255, 100, 0.5)'},
+          {sensor: 'Upstairs Hall',  xQty: 'time', yQty: 'temp', lineColour: 'rgba(0, 255, 150, 0.5)'},
         ]
       }
     ],
