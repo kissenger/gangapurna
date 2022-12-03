@@ -1,23 +1,13 @@
 .chart-container {
-  height: 110vh;
+  height: 130vh;
+
   overflow:hidden;
-  /* position: relative; */
-  /* height: 100%;
-  width: 100% !important; */
 }
 
-.sub-chart-container {
-  position: relative
-}
-canvas {
-
-  width: 100%;
-  /* height: 100% !important; */
-}
-
-.table-container {
-  position: relative;
-  /* height:25%; */
+@media (max-width: 576px) {
+  .capped-height{
+    height: 110vh;
+  }
 }
 
 table {

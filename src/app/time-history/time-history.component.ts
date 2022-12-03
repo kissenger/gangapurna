@@ -285,7 +285,8 @@ export class TimeHistoryComponent implements OnInit {
           }
 
           if ( s.lastPointOnly ) {
-            s.styles.pointRadius = s.data.map( (d, i) => ( i < s.data.length - 1 ? 0 : s.pointRadius));
+            // s.styles.pointRadius = s.data.map( (d, i) => ( i < s.data.length - 1 ? 0 : s.pointRadius));
+            s.styles.pointRadius = s.data.map( (d, i) => ( i > 0 ? 0 : s.pointRadius));
           }
 
         }

@@ -1,5 +1,5 @@
 
-<div *ngFor="let chart of defineCharts[zone]; index as i" class="chart-container d-flex flex-column ">
+<div *ngFor="let chart of defineCharts[zone]; index as i" class="chart-container capped-height d-flex flex-column ">
 
     <!-- <canvas baseChart width="1" height="1" -->
     <div class="sub-chart-container flex-grow-1">
@@ -15,7 +15,7 @@
       </canvas>
     </div>
 
-    <div class="table-container d-flex justify-content-center">
+    <div class="d-flex justify-content-center">
       <table *ngIf="chart.xAxisLabel=='time'" class="dataTable">
         <tr>
           <td>Sensor</td>
@@ -36,9 +36,9 @@
       </table>
     </div>
 
-
+    <div class="spacer"></div>
+    <hr>
+    <div class="spacer"></div>
   </div>
 
-  <!-- <div class="spacer"></div>
-  <hr>
-  <div class="spacer"></div> -->
+
