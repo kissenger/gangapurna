@@ -133,7 +133,13 @@ export class TimeHistoryComponent implements OnInit {
         xAxisLabel: 'time',
         yAxisLabel: 'temp',
         series: [
-          {sensor: 'ahtStoreRoom', xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'}
+          {sensor: 'shtOutside', xQty: 'time', yQty: 'temp', lineColour: 'rgba(50, 50, 255, 0.5)'}
+        ]
+      }, {
+        xAxisLabel: 'time',
+        yAxisLabel: 'rh',
+        series: [
+          { sensor: 'shtOutside', xQty: 'time', yQty: 'rh', lineColour: 'rgba(100, 100, 50, 0.5)'}
         ]
       }
     ]
