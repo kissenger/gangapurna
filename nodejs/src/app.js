@@ -63,6 +63,7 @@ app.get('/api/nas/:command', async (req, res) => {
   res.writeHead(200, {'Content-Type': 'text/html'});
 
   if ( isOnline.stdout === 'true\n' ) {
+    console.log(isOnline.stdout);
     if ( req.params.command === 'sleep' ) {
       res.write('NAS is going to sleep ...');
     } else {
